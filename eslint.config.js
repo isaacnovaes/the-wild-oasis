@@ -85,7 +85,7 @@ export default tseslintPlugin.config(
     },
     eslintPluginPrettierRecommended,
     {
-        files: ['**/*.scss'],
+        files: ['**/*.css'],
         plugins: ['stylelint-prettier'],
         rules: {
             'prettier/prettier': true,

@@ -9,8 +9,8 @@
 
         "allowJs": true,
         "resolveJsonModule": true,
-        "verbatimModuleSyntax": true,
         "noUncheckedIndexedAccess": true,
+        "verbatimModuleSyntax": true,
         "noImplicitOverride": true,
 
         /* Bundler mode */
@@ -23,8 +23,8 @@
 
         /* Linting */
         "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
+        // "noUnusedLocals": true, @typescript-eslint/no-unused-expressions
+        // "noUnusedParameters": true, @typescript-eslint/no-unused-expressions
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true
     },

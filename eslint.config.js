@@ -41,9 +41,6 @@ export default tseslintPlugin.config(
         },
     },
     eslintPluginPrettierRecommended,
-    reactPlugin.configs.flat.recommended,
-    reactPlugin.configs.flat['jsx-runtime'],
-    jsxA11yPlugin.flatConfigs.strict,
     ...tseslintPlugin.configs.recommendedTypeChecked.map((config) => ({
         ...config,
         files: ['**/*.{ts,tsx}'], // We use TS config only for TS files
@@ -71,6 +68,7 @@ export default tseslintPlugin.config(
             'react-hooks': reactHooksPlugin,
             'react-refresh': reactRefreshPlugin,
             react: reactPlugin,
+            'jsx-a11y': jsxA11yPlugin,
         },
         rules: {
             // Typescript ---------------------------------------------------------------
@@ -95,7 +93,6 @@ export default tseslintPlugin.config(
                     detectObjects: true,
                     ignoreEnums: true,
                     ignoreNumericLiteralTypes: true,
-                    ignoreReadonlyClassProperties: true,
                 },
             ],
             'no-redeclare': 'off',
@@ -122,8 +119,11 @@ export default tseslintPlugin.config(
 
             // React ------------------------------------------------------
 
-            'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+            ...reactPlugin.configs.flat.recommended.rules,
+            ...reactPlugin.configs.flat['jsx-runtime'].rules,
             ...reactHooksPlugin.configs.recommended.rules,
+            ...jsxA11yPlugin.flatConfigs.strict.rules,
+            'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
             'react/boolean-prop-naming': ['warn', { validateNested: true }],
             'react/button-has-type': 'warn',
             'react/destructuring-assignment': [
@@ -144,7 +144,6 @@ export default tseslintPlugin.config(
                 'warn',
                 { ignoreCase: true, callbacksLast: true, reservedFirst: ['key', 'ref'] },
             ],
-
             'react/no-array-index-key': 'warn',
             'react/no-unstable-nested-components': 'error',
             'react/no-unused-prop-types': 'warn',

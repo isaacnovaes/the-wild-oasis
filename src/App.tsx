@@ -3,8 +3,13 @@ import styles from './App.module.css';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 
+const CONSTANTS = {
+    zero: 0,
+    one: 1,
+};
+
 function App() {
-    const [count, setCount] = useState(0);
+    const [count, setCount] = useState(CONSTANTS.zero);
 
     return (
         <>
@@ -25,7 +30,7 @@ function App() {
                 <button
                     type='button'
                     onClick={() => {
-                        setCount((prevCount) => prevCount + 1);
+                        setCount((prevCount) => prevCount + CONSTANTS.one);
                     }}
                 >
                     count is {count}

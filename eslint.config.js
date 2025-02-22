@@ -126,11 +126,7 @@ export default tseslintPlugin.config(
             'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
             'react/boolean-prop-naming': ['warn', { validateNested: true }],
             'react/button-has-type': 'warn',
-            'react/destructuring-assignment': [
-                'warn',
-                'always',
-                { ignoreClassFields: true, destructureInSignature: 'always' },
-            ],
+            'react/destructuring-assignment': 'off',
             'react/jsx-boolean-value': 'warn',
             'react/jsx-child-element-spacing': 'warn',
             'react/jsx-handler-names': [

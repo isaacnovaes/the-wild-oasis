@@ -13,7 +13,7 @@ export default tseslintPlugin.config(
         rules: {
             ...eslintPlugin.configs.recommended.rules,
             'array-callback-return': 'warn',
-            'no-duplicate-imports': ['warn', { includeExports: true }],
+            'no-duplicate-imports': 'warn',
             'no-self-compare': 'error',
             'no-template-curly-in-string': 'error',
             'no-useless-assignment': 'error',
@@ -74,7 +74,11 @@ export default tseslintPlugin.config(
             // Typescript ---------------------------------------------------------------
 
             '@typescript-eslint/consistent-type-exports': 'warn',
-            '@typescript-eslint/consistent-type-imports': 'warn',
+            '@typescript-eslint/consistent-type-imports': [
+                'warn',
+                { fixStyle: 'inline-type-imports' },
+            ],
+            '@typescript-eslint/no-import-type-side-effects': 'warn',
             '@typescript-eslint/method-signature-style': 'warn',
             '@typescript-eslint/promise-function-async': 'error',
             '@typescript-eslint/no-useless-empty-export': 'warn',

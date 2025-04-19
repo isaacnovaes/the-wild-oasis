@@ -1,4 +1,6 @@
 import eslintPlugin from '@eslint/js';
+import pluginQuery from '@tanstack/eslint-plugin-query';
+import pluginRouter from '@tanstack/eslint-plugin-router';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import reactPlugin from 'eslint-plugin-react';
@@ -49,6 +51,7 @@ export default tseslintPlugin.config(
         ...config,
         files: ['**/*.{ts,tsx}'], // We use TS config only for TS files
     })),
+    ...pluginQuery.configs['flat/recommended'],
     {
         files: ['**/*.{ts,tsx}'],
         languageOptions: {
@@ -69,6 +72,7 @@ export default tseslintPlugin.config(
             'react-refresh': reactRefreshPlugin,
             react: reactPlugin,
             'jsx-a11y': jsxA11yPlugin,
+            '@tanstack/router': pluginRouter,
         },
         rules: {
             // Typescript ---------------------------------------------------------------
@@ -157,6 +161,7 @@ export default tseslintPlugin.config(
                     format: ['PascalCase', 'camelCase'],
                 },
             ], // avoid react component naming warning
+            '@tanstack/router/create-route-property-order': 'warn',
         },
     }
 );

@@ -4,7 +4,6 @@ import type { Settings } from '../types/global';
 export async function getSettings(): Promise<Settings> {
     const response = await supabase.from('settings').select('*').single();
     const { data, error } = response;
-
     if (error) {
         console.error(error);
         throw new Error('Settings could not be loaded');

@@ -1,6 +1,15 @@
+import type { UserAttributes } from '@supabase/supabase-js';
 import supabase, { SUPABASE_URL } from '../supabase';
 
-export async function signup({ fullName, email, password }) {
+export async function signup({
+    fullName,
+    email,
+    password,
+}: {
+    fullName: string;
+    email: string;
+    password: string;
+}) {
     const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -17,7 +26,7 @@ export async function signup({ fullName, email, password }) {
     return data;
 }
 
-export async function login({ email, password }) {
+export async function login({ email, password }: { email: string; password: string }) {
     const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -43,11 +52,19 @@ export async function logout() {
     if (error) throw new Error(error.message);
 }
 
-export async function updateCurrentUser({ password, fullName, avatar }) {
+export async function updateCurrentUser({
+    password,
+    fullName,
+    avatar,
+}: {
+    password?: string;
+    fullName?: string;
+    avatar?: File;
+}) {
     // 1. Update password OR fullName
-    let updateData;
-    if (password) updateData = { password };
-    if (fullName) updateData = { data: { fullName } };
+    const updateData: UserAttributes = {};
+    if (password) updateData.password = password;
+    if (fullName) updateData.data = { fullName };
 
     const { data, error } = await supabase.auth.updateUser(updateData);
 
@@ -55,7 +72,7 @@ export async function updateCurrentUser({ password, fullName, avatar }) {
     if (!avatar) return data;
 
     // 2. Upload the avatar image
-    const fileName = `avatar-${data.user.id}-${Math.random()}`;
+    const fileName = `avatar-${data.user.id}-${Math.random().toString()}`;
 
     const { error: storageError } = await supabase.storage.from('avatars').upload(fileName, avatar);
 

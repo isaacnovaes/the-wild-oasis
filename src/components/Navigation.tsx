@@ -1,4 +1,3 @@
-import Uploader from '../data/Uploader';
 import NavLinks from './NavLinks';
 
 const Navigation = () => {
@@ -8,7 +7,7 @@ const Navigation = () => {
             <div className='py-5 lg:px-4 lg:py-8'>
                 <NavLinks />
             </div>
-            <Uploader />
+            {/* <Uploader /> */}
         </div>
     );
 };

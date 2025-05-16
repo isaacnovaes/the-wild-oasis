@@ -1,45 +1,41 @@
-import { Link } from '@tanstack/react-router';
-import { CalendarDays, House, Settings, Store, Users } from 'lucide-react';
+import { Link, linkOptions } from '@tanstack/react-router';
+import { CalendarDays, House, Settings, Users } from 'lucide-react';
+
+const navOptions = linkOptions([
+    { to: '/dashboard', label: 'Home', icon: House, search: {} },
+    {
+        to: '/bookings',
+        search: { page: 1 },
+        label: 'Bookings',
+        icon: CalendarDays,
+    },
+    {
+        to: '/cabins',
+        search: { page: 1 },
+        label: 'Cabins',
+        icon: CalendarDays,
+    },
+    { to: '/users', label: 'Users', icon: Users, search: {} },
+    { to: '/settings', label: 'Settings', icon: Settings, search: {} },
+]);
+
+const linkClassName =
+    'group flex items-center gap-5 rounded-md p-2 [.active]:bg-zinc-100 hover:bg-zinc-200 motion-safe:transition-colors ';
+const iconClassName = 'stroke-gray-400 group-[.active]:stroke-indigo-500';
+const spanClassName = 'group-[.active]:text-indigo-700';
 
 const NavLinks = () => {
-    return (
-        <>
-            <Link
-                className='group flex items-center gap-5 rounded-md p-2 hover:bg-zinc-200 motion-safe:transition-colors'
-                to='/dashboard'
-            >
-                <House className='stroke-gray-400 group-[.active]:stroke-indigo-500' />
-                <span className='group-[.active]:text-indigo-700'>Home</span>
-            </Link>
-            <Link
-                className='group flex items-center gap-5 rounded-md p-2 hover:bg-zinc-200 motion-safe:transition-colors'
-                to='/bookings'
-            >
-                <CalendarDays className='stroke-gray-400 group-[.active]:stroke-indigo-500' />
-                <span className='group-[.active]:text-indigo-700'>Bookings</span>
-            </Link>
-            <Link
-                className='group flex items-center gap-5 rounded-md p-2 hover:bg-zinc-200 motion-safe:transition-colors'
-                to='/cabins'
-            >
-                <Store className='stroke-gray-400 group-[.active]:stroke-indigo-500' />
-                <span className='group-[.active]:text-indigo-700'>Cabins</span>
-            </Link>
-            <Link
-                className='group flex items-center gap-5 rounded-md p-2 hover:bg-zinc-200 motion-safe:transition-colors'
-                to='/users'
-            >
-                <Users className='stroke-gray-400 group-[.active]:stroke-indigo-500' />
-                <span className='group-[.active]:text-indigo-700'>Users</span>
-            </Link>
-            <Link
-                className='group flex items-center gap-5 rounded-md p-2 hover:bg-zinc-200 motion-safe:transition-colors'
-                to='/settings'
-            >
-                <Settings className='stroke-gray-400 group-[.active]:stroke-indigo-500' />
-                <span className='group-[.active]:text-indigo-700'>Settings</span>
-            </Link>
-        </>
-    );
+    return navOptions.map((option) => (
+        <Link
+            key={option.to}
+            activeOptions={{ includeSearch: false }}
+            className={linkClassName}
+            search={option.search}
+            to={option.to}
+        >
+            <option.icon className={iconClassName} />
+            <span className={spanClassName}>{option.label}</span>
+        </Link>
+    ));
 };
 export default NavLinks;

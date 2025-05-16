@@ -1,4 +1,5 @@
 import { differenceInDays, formatDistance, parseISO } from 'date-fns';
+import type { Booking } from '../types/global';
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)
 export const subtractDates = (dateStr1: string, dateStr2: string) =>
@@ -25,3 +26,15 @@ export const getToday = function (options: { end: boolean } = { end: false }) {
 
 export const formatCurrency = (value: number) =>
     new Intl.NumberFormat('en', { style: 'currency', currency: 'USD' }).format(value);
+
+export async function delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const statusToStyleMap: Record<Booking['status'], { color: string; background: string }> = {
+    unconfirmed: { color: 'text-sky-700', background: 'bg-sky-100' },
+    'checked-in': { color: 'text-green-700', background: 'bg-green-100' },
+    'checked-out': { color: 'text-rose-700', background: 'bg-rose-100' },
+};
+
+export const getBookingStatusStyle = (status: Booking['status']) => statusToStyleMap[status];

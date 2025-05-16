@@ -146,7 +146,11 @@ export default tseslintPlugin.config(
             'react/jsx-no-useless-fragment': 'warn',
             'react/jsx-sort-props': [
                 'warn',
-                { ignoreCase: true, callbacksLast: true, reservedFirst: ['key', 'ref'] },
+                {
+                    ignoreCase: true,
+                    callbacksLast: true,
+                    reservedFirst: ['key', 'ref'],
+                },
             ],
             'react/no-array-index-key': 'warn',
             'react/no-unstable-nested-components': 'error',

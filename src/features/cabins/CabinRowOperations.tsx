@@ -1,17 +1,30 @@
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Copy, Pencil, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { Copy, EllipsisVertical, Loader, Pencil, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import Modal from '../../components/Modal';
-import RowOperations from '../../components/RowOperations';
 import { createEditCabin, deleteCabin } from '../../services/apiCabins';
 import type { Cabin } from '../../types/global';
 
 const CabinRowOperations = ({ cabin }: { readonly cabin: Cabin }) => {
     const queryClient = useQueryClient();
-    const [openModalName, setOpenModalName] = useState<'duplicate' | 'edit' | 'delete' | null>(
-        null
-    );
 
     const duplicateCabinMutation = useMutation({
         mutationFn: createEditCabin,
@@ -37,59 +50,75 @@ const CabinRowOperations = ({ cabin }: { readonly cabin: Cabin }) => {
         },
     });
 
-    const disabled = duplicateCabinMutation.isPending || deleteCabinMutation.isPending;
+    const pending = duplicateCabinMutation.isPending || deleteCabinMutation.isPending;
 
     return (
-        <RowOperations>
-            <button
-                disabled={disabled}
-                type='button'
-                onClick={() => {
-                    duplicateCabinMutation.mutate({
-                        description: cabin.description,
-                        discount: cabin.discount,
-                        image: cabin.image,
-                        maxCapacity: cabin.maxCapacity,
-                        name: `${cabin.name}-duplicate-${(Math.random() * 10).toPrecision(1)}`,
-                        regularPrice: cabin.regularPrice,
-                    });
-                }}
-            >
-                <Copy className='size-4 stroke-slate-700' /> Duplicate
-            </button>
-            <button disabled={disabled} type='button'>
-                <Pencil className='size-4 stroke-slate-700' /> Edit
-            </button>
-            <button
-                disabled={disabled}
-                type='button'
-                onClick={(e) => {
-                    e.stopPropagation();
-                    setOpenModalName('delete');
-                }}
-            >
-                <Trash2 className='size-4 stroke-slate-700' /> Delete
-                {openModalName === 'delete' && (
-                    <Modal
-                        primaryClassName='border-1 border-red-500 text-white bg-red-500 rounded-sm px-4 hover:cursor-pointer py-2 hover:bg-white
-                         hover:text-red-500'
-                        primaryFunction={() => {
-                            deleteCabinMutation.mutate(cabin.id.toString());
-                            setOpenModalName(null);
-                        }}
-                        primaryTitle='Delete'
-                        secondaryClassName='border-1 border-slate-700 rounded-sm px-4 py-2 hover:cursor-pointer hover:bg-slate-700 hover:text-white'
-                        secondaryFunction={() => {
-                            setOpenModalName(null);
-                        }}
-                        secondaryTitle='Cancel'
-                        title='Delete cabin'
-                    >
-                        Are you sure you want to delete this cabin? You cannot undo this action!
-                    </Modal>
+        <DropdownMenu>
+            <DropdownMenuTrigger disabled={pending}>
+                {pending ? (
+                    <Loader className='size-4 animate-spin stroke-indigo-500 hover:cursor-pointer' />
+                ) : (
+                    <EllipsisVertical className='size-4 stroke-gray-600 hover:cursor-pointer' />
                 )}
-            </button>
-        </RowOperations>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+                <DropdownMenuLabel>Cabin row operations</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                    onClick={() => {
+                        duplicateCabinMutation.mutate({
+                            description: cabin.description,
+                            discount: cabin.discount,
+                            image: cabin.image,
+                            maxCapacity: cabin.maxCapacity,
+                            name: `${cabin.name}-duplicate-${Math.floor(Math.random() * 100).toPrecision(1)}`,
+                            regularPrice: cabin.regularPrice,
+                            linkedToBooking: false,
+                        });
+                    }}
+                >
+                    <Copy className='size-4 stroke-slate-700' /> Duplicate
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                    <Pencil className='size-4 stroke-slate-700' /> Edit
+                </DropdownMenuItem>
+
+                <DropdownMenuItem disabled={cabin.linkedToBooking}>
+                    <AlertDialog>
+                        <AlertDialogTrigger
+                            className={`flex items-center justify-center gap-x-2 delete-operation-cabin-${cabin.id.toString()}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                            }}
+                        >
+                            <Trash2 className='size-4 stroke-slate-700' /> Delete
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle className='text-slate-700'>
+                                    Are you sure you want to delete this cabin?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete this
+                                    cabin.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                    variant={'destructive'}
+                                    onClick={() => {
+                                        deleteCabinMutation.mutate(cabin.id);
+                                    }}
+                                >
+                                    Delete
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
     );
 };
 export default CabinRowOperations;

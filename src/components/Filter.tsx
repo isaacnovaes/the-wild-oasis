@@ -19,7 +19,7 @@ function Filter({
     const currentSearch = useSearch({ strict: false });
 
     return (
-        <div className='flex gap-x-1 rounded-sm border-none bg-gray-50'>
+        <div className='flex gap-x-1 rounded-sm border-none'>
             {options.map((option) => {
                 let isActive =
                     currentSearch.filter?.value === option.value &&
@@ -31,7 +31,7 @@ function Filter({
 
                 return (
                     <button
-                        key={option.value}
+                        key={`${option.value}${option.method}`}
                         aria-disabled={isActive}
                         className={`rounded-sm border-none p-[0.90rem] text-sm font-medium hover:not-disabled:cursor-pointer hover:not-disabled:bg-indigo-500 hover:not-disabled:text-white aria-disabled:cursor-not-allowed ${isActive ? 'text-indigo-500' : 'text-slate-700'}`}
                         disabled={isActive}

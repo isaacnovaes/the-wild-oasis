@@ -25,7 +25,7 @@ export async function getCabins({ page, filter, sortBy }: SearchParams) {
 
     if (error) {
         console.error(error);
-        throw new Error('Cabins could not be loaded');
+        throw new Error(error.message);
     }
 
     const responseSchema = z.object({
@@ -37,7 +37,7 @@ export async function getCabins({ page, filter, sortBy }: SearchParams) {
 
     if (validation.error) {
         console.error(validation.error);
-        throw new Error('Cabins schema validation failed');
+        throw new Error(validation.error.message);
     }
 
     return validation.data;
@@ -64,7 +64,7 @@ export async function createEditCabin(newCabin: Partial<Cabin>, id?: string): Pr
 
     if (error) {
         console.error(error);
-        throw new Error('Cabin could not be created');
+        throw new Error(error.message);
     }
 
     // 2. Upload image
@@ -89,7 +89,7 @@ export async function deleteCabin(id: string) {
 
     if (error) {
         console.error(error);
-        throw new Error('Cabin could not be deleted');
+        throw new Error(error.message);
     }
 
     return data;

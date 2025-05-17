@@ -19,6 +19,9 @@ const queryClient = new QueryClient({
             gcTime: Infinity,
             retry: false,
         },
+        mutations: {
+            retry: false,
+        },
     },
 });
 

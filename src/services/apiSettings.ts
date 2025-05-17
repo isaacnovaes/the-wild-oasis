@@ -6,7 +6,7 @@ export async function getSettings(): Promise<Settings> {
     const { data, error } = response;
     if (error) {
         console.error(error);
-        throw new Error('Settings could not be loaded');
+        throw new Error(error.message);
     }
     return data;
 }
@@ -22,7 +22,7 @@ export async function updateSetting(newSetting: Partial<Settings>): Promise<Sett
 
     if (error) {
         console.error(error);
-        throw new Error('Settings could not be updated');
+        throw new Error(error.message);
     }
     return data;
 }

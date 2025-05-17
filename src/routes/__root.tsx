@@ -13,6 +13,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
             <Outlet />
             <TanStackRouterDevtools />
             <Toaster />
+            <div id='modal' />
         </div>
     ),
 });

@@ -1,6 +1,7 @@
 import Currency from '../../components/Currency';
 import Table from '../../components/Table';
 import type { Cabin } from '../../types/global';
+import CabinRowOperations from './CabinRowOperations';
 
 const CabinRow = ({ cabin }: { readonly cabin: Cabin }) => {
     return (
@@ -8,9 +9,9 @@ const CabinRow = ({ cabin }: { readonly cabin: Cabin }) => {
             <img
                 alt={`${cabin.name} cabin`}
                 className='rounded-sm'
-                height={80}
+                height={65}
                 src={cabin.image}
-                width={80}
+                width={65}
             />
             <span>{cabin.name}</span>
             <span>Fits up to {cabin.maxCapacity} guests</span>
@@ -20,6 +21,7 @@ const CabinRow = ({ cabin }: { readonly cabin: Cabin }) => {
             ) : (
                 <span className='text-slate-800'>&mdash;</span>
             )}
+            <CabinRowOperations cabin={cabin} />
         </Table.Row>
     );
 };

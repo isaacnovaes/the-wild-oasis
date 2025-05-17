@@ -1,3 +1,4 @@
+import { useSearch } from '@tanstack/react-router';
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
 
 const Footer = (props: { readonly children: ReactNode }) => {
@@ -74,7 +75,13 @@ function Body<T>({
     readonly data: T[];
     readonly render: (item: T) => ReactNode;
 }) {
-    if (!data.length) return <Empty>No data to show at the moment</Empty>;
+    const { page } = useSearch({ strict: false });
+    if (!data.length)
+        return (
+            <Empty>
+                No data to show at the moment {page && page > 1 ? `for page ${page}` : ''}
+            </Empty>
+        );
 
     return <section className='mx-2 overflow-auto'>{data.map(render)}</section>;
 }

@@ -25,7 +25,7 @@ function RouteComponent() {
                 </div>
             </div>
             <Navigation />
-            <div className='overflow-y-auto bg-zinc-50 p-4'>
+            <div className='overflow-y-auto p-4'>
                 <div className='mx-auto h-full max-w-[80rem]'>
                     <Outlet />
                 </div>

@@ -1,28 +1,39 @@
 import supabase from '../supabase';
-import type { Settings } from '../types/global';
+import { SettingsSchema, type Settings } from '../types/global';
 
 export async function getSettings(): Promise<Settings> {
-    const response = await supabase.from('settings').select('*').single();
-    const { data, error } = response;
+    const { data, error } = await supabase.from('settings').select('*').single();
+
     if (error) {
         console.error(error);
         throw new Error(error.message);
     }
-    return data;
+
+    const validation = SettingsSchema.safeParse(data);
+
+    if (validation.error) {
+        console.error(validation.error);
+        throw new Error(validation.error.message);
+    }
+
+    return validation.data;
 }
 
 // We expect a newSetting object that looks like {setting: newValue}
 export async function updateSetting(newSetting: Partial<Settings>): Promise<Settings> {
-    const { data, error } = await supabase
-        .from('settings')
-        .update(newSetting)
-        // There is only ONE row of settings, and it has the ID=1, and so this is the updated one
-        .eq('id', 1)
-        .single();
+    const { data, error } = await supabase.from('settings').update(newSetting).eq('id', 1).single();
 
     if (error) {
         console.error(error);
         throw new Error(error.message);
     }
-    return data;
+
+    const validation = SettingsSchema.safeParse(data);
+
+    if (validation.error) {
+        console.error(validation.error);
+        throw new Error(validation.error.message);
+    }
+
+    return validation.data;
 }

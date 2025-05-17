@@ -34,7 +34,7 @@ export async function getBookings({ filter, sortBy, page }: SearchParams) {
 
     if (error) {
         console.error(error);
-        throw new Error('Bookings could not be loaded');
+        throw new Error(error.message);
     }
 
     const responseSchema = z.object({
@@ -46,7 +46,7 @@ export async function getBookings({ filter, sortBy, page }: SearchParams) {
 
     if (validation.error) {
         console.error(validation.error);
-        throw new Error('Bookings schema validation failed');
+        throw new Error(validation.error.message);
     }
 
     return validation.data;
@@ -61,20 +61,19 @@ export async function getBooking(id: string): Promise<Booking> {
 
     if (error) {
         console.error(error);
-        throw new Error('Booking not found');
+        throw new Error(error.message);
     }
 
     const validation = BookingSchema.safeParse(data);
 
     if (validation.error) {
         console.error(validation.error);
-        throw new Error('Booking schema validation failed');
+        throw new Error(validation.error.message);
     }
 
     return validation.data;
 }
 
-// Returns all BOOKINGS that are were created after the given date. Useful to get bookings created in the last 30 days, for example.
 // date: ISOString
 export async function getBookingsAfterDate(date: string) {
     const { data, error } = await supabase
@@ -85,7 +84,7 @@ export async function getBookingsAfterDate(date: string) {
 
     if (error) {
         console.error(error);
-        throw new Error('Bookings could not get loaded');
+        throw new Error(error.message);
     }
 
     const bookingResponseSchema = BookingSchema.pick({
@@ -104,13 +103,12 @@ export async function getBookingsAfterDate(date: string) {
 
     if (validation.error) {
         console.error(validation.error);
-        throw new Error('Bookings schema validation failed');
+        throw new Error(validation.error.message);
     }
 
     return validation.data.bookings;
 }
 
-// Returns all STAYS that are were created after the given date
 export async function getStaysAfterDate(date: string) {
     const { data, error } = await supabase
         .from('bookings')
@@ -120,7 +118,7 @@ export async function getStaysAfterDate(date: string) {
 
     if (error) {
         console.error(error);
-        throw new Error('Bookings could not get loaded');
+        throw new Error(error.message);
     }
     const bookingResponseSchema = BookingSchema.omit({ guests: true }).extend({
         guests: z.object({
@@ -136,7 +134,7 @@ export async function getStaysAfterDate(date: string) {
 
     if (validation.error) {
         console.error(validation.error);
-        throw new Error('Bookings schema validation failed');
+        throw new Error(validation.error.message);
     }
 
     return validation.data.bookings;
@@ -158,7 +156,7 @@ export async function getStaysTodayActivity(): Promise<Booking[]> {
 
     if (error) {
         console.error(error);
-        throw new Error('Bookings could not get loaded');
+        throw new Error(error.message);
     }
     return data;
 }
@@ -173,18 +171,17 @@ export async function updateBooking(id: string, obj: Partial<Booking>) {
 
     if (error) {
         console.error(error);
-        throw new Error('Booking could not be updated');
+        throw new Error(error.message);
     }
     return data;
 }
 
 export async function deleteBooking(id: string) {
-    // REMEMBER RLS POLICIES
     const { data, error } = await supabase.from('bookings').delete().eq('id', id);
 
     if (error) {
         console.error(error);
-        throw new Error('Booking could not be deleted');
+        throw new Error(error.message);
     }
     return data;
 }

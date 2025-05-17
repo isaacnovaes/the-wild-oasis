@@ -43,7 +43,7 @@ export async function getCabins({ page, filter, sortBy }: SearchParams) {
     return validation.data;
 }
 
-export async function createEditCabin(newCabin: Partial<Cabin>, id?: string): Promise<Cabin[]> {
+export async function createEditCabin(newCabin: Partial<Cabin>, id?: number): Promise<Cabin> {
     const hasImagePath = newCabin.image?.startsWith(SUPABASE_URL);
 
     const imageName = `${Math.random().toString()}-${newCabin.image?.name}`.replaceAll('/', '');
@@ -67,8 +67,15 @@ export async function createEditCabin(newCabin: Partial<Cabin>, id?: string): Pr
         throw new Error(error.message);
     }
 
+    const cabinValidation = CabinSchema.safeParse(data);
+
+    if (cabinValidation.error) {
+        console.error(cabinValidation.error);
+        throw new Error(cabinValidation.error.message);
+    }
+
     // 2. Upload image
-    if (hasImagePath) return data;
+    if (hasImagePath) return cabinValidation.data;
 
     const { error: storageError } = await supabase.storage
         .from('cabin-images')
@@ -76,15 +83,15 @@ export async function createEditCabin(newCabin: Partial<Cabin>, id?: string): Pr
 
     // 3. Delete the cabin IF there was an error uplaoding image
     if (storageError) {
-        await supabase.from('cabins').delete().eq('id', data.id);
+        await supabase.from('cabins').delete().eq('id', cabinValidation.data.id);
         console.error(storageError);
         throw new Error('Cabin image could not be uploaded and the cabin was not created');
     }
 
-    return data;
+    return cabinValidation.data;
 }
 
-export async function deleteCabin(id: string) {
+export async function deleteCabin(id: number): Promise<null> {
     const { data, error } = await supabase.from('cabins').delete().eq('id', id);
 
     if (error) {

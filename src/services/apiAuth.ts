@@ -69,6 +69,7 @@ export async function updateCurrentUser({
     const { data, error } = await supabase.auth.updateUser(updateData);
 
     if (error) throw new Error(error.message);
+
     if (!avatar) return data;
 
     // 2. Upload the avatar image
@@ -86,5 +87,6 @@ export async function updateCurrentUser({
     });
 
     if (error2) throw new Error(error2.message);
+
     return updatedUser;
 }

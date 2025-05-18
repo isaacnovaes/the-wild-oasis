@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { ErrorComponent, getRouteApi } from '@tanstack/react-router';
 import Loading from '../../components/Loading';
 import Pagination from '../../components/Pagination';
@@ -23,13 +24,20 @@ const Cabins = () => {
     return (
         <div>
             <div className='mb-5 flex items-center justify-between'>
-                <h1 className='text-2xl font-semibold text-slate-700'>All cabins</h1>
+                <div className='flex items-center justify-center gap-x-10'>
+                    <h1 className='text-2xl font-semibold text-slate-700'>All cabins</h1>
+                    <Button variant={'outline'}>Create new cabin</Button>
+                    <code>Use Dialog component from shadcn</code>
+                    <code>Read react hook form</code>
+                    <code>Take a look at shadcn lib form wrapper for react hook form</code>
+                </div>
                 <CabinTableOperations />
             </div>
-            <Table columns='grid-cols-[0.6fr_1.8fr_2.2fr_1fr_1fr_1fr]'>
+            <Table columns='grid-cols-[0.6fr_1fr_2fr_1.5fr_1fr_1fr_3.2rem]'>
                 <Table.Header>
                     <div />
-                    <div>Cabin</div>
+                    <div>Id</div>
+                    <div>Name</div>
                     <div>Capacity</div>
                     <div>Price</div>
                     <div>Discount</div>

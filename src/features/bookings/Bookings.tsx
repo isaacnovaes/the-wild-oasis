@@ -26,19 +26,15 @@ const Bookings = () => {
                 <h1 className='text-2xl font-semibold text-slate-700'>All bookings</h1>
                 <BookingTableOperations />
             </div>
-            <Table
-                columns='grid-cols-[0.6fr_2fr_2.4fr_1.4fr_1fr_3.2rem]'
-                header={
-                    <Table.Header>
-                        <div>Cabin</div>
-                        <div>Guest</div>
-                        <div>Dates</div>
-                        <div>Status</div>
-                        <div>Amount</div>
-                        <div />
-                    </Table.Header>
-                }
-            >
+            <Table columns='grid-cols-[0.6fr_2fr_2.4fr_1.4fr_1fr_3.2rem]'>
+                <Table.Header>
+                    <div>Cabin id</div>
+                    <div>Guest</div>
+                    <div>Dates</div>
+                    <div>Status</div>
+                    <div>Amount</div>
+                    <div />
+                </Table.Header>
                 {isPending ? (
                     <Loading />
                 ) : (

@@ -11,6 +11,7 @@ export const CabinSchema = z.object({
     discount: z.number(),
     description: z.string().optional(),
     image: z.string(),
+    linkedToBooking: z.boolean(),
 });
 export type Cabin = z.infer<typeof CabinSchema>;
 
@@ -46,7 +47,6 @@ export type Booking = z.infer<typeof BookingSchema>;
 
 export const BookingRowSchema = BookingSchema.pick({
     id: true,
-
     created_at: true,
     startDate: true,
     endDate: true,
@@ -56,7 +56,7 @@ export const BookingRowSchema = BookingSchema.pick({
     totalPrice: true,
 }).extend({
     cabins: z.object({
-        name: z.string(),
+        id: z.number().int(),
     }),
     guests: z.object({
         fullName: z.string(),

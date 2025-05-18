@@ -13,6 +13,12 @@ const CabinRow = ({ cabin }: { readonly cabin: Cabin }) => {
                 src={cabin.image}
                 width={65}
             />
+            <div className='flex flex-col items-start'>
+                <span className='text-sm font-semibold text-blue-950'>{cabin.id}</span>
+                <span className='font-serif text-xs text-gray-400 italic'>
+                    {cabin.linkedToBooking ? 'linked to a booking' : ''}
+                </span>
+            </div>
             <span>{cabin.name}</span>
             <span>Fits up to {cabin.maxCapacity} guests</span>
             <Currency amount={cabin.regularPrice} />

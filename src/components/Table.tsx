@@ -21,23 +21,11 @@ const useColumns = () => {
     return context.columns;
 };
 
-function Table({
-    columns,
-    children,
-    header,
-}: {
-    readonly columns: string;
-    readonly children: ReactNode;
-    readonly header: ReactNode;
-}) {
+function Table({ columns, children }: { readonly columns: string; readonly children: ReactNode }) {
     const value = useMemo(() => ({ columns }), [columns]);
     return (
         <TableContext.Provider value={value}>
-            {header}
-            <div
-                className='rounded-b-lg border-1 border-gray-200 bg-gray-50 shadow-md'
-                role='table'
-            >
+            <div className='rounded-b-lg border-1 border-gray-200 shadow-md' role='table'>
                 {children}
             </div>
         </TableContext.Provider>
@@ -79,7 +67,8 @@ function Body<T>({
     if (!data.length)
         return (
             <Empty>
-                No data to show at the moment {page && page > 1 ? `for page ${page}` : ''}
+                No data to show at the moment{' '}
+                {page && page > 1 ? `for page ${page.toString()}` : ''}
             </Empty>
         );
 

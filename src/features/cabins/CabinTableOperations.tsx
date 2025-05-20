@@ -53,7 +53,7 @@ const CabinTableOperations = () => {
 
     return (
         <TableOperations>
-            <Filter filterField='discount' options={filterOptions} to='/cabins' />
+            <Filter filterField='discount' options={filterOptions} routePath='/cabins' />
             <SortBy
                 handleChange={(e) => {
                     void navigate({

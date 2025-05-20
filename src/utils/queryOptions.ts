@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/react-query';
+import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import { getCurrentUser } from '../services/apiAuth';
 import { getBookings } from '../services/apiBookings';
 import { getCabins } from '../services/apiCabins';
@@ -9,12 +9,14 @@ export const cabinsQueryOptions = (query: SearchParams) =>
     queryOptions({
         queryKey: ['cabins', query],
         queryFn: async () => getCabins(query),
+        placeholderData: keepPreviousData,
     });
 
 export const bookingsQueryOptions = (query: SearchParams) =>
     queryOptions({
         queryKey: ['bookings', query],
         queryFn: async () => getBookings(query),
+        placeholderData: keepPreviousData,
     });
 
 export const accountQueryOptions = queryOptions({

@@ -1,10 +1,19 @@
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { ErrorComponent, getRouteApi } from '@tanstack/react-router';
+import { useState } from 'react';
 import Loading from '../../components/Loading';
 import Pagination from '../../components/Pagination';
 import Table from '../../components/Table';
 import { PAGE_SIZE } from '../../utils/constants';
 import { useCabins } from '../../utils/hooks';
+import CabinForm from './CabinForm';
 import CabinRow from './CabinRow';
 import CabinTableOperations from './CabinTableOperations';
 
@@ -13,6 +22,7 @@ const cabinRouter = getRouteApi('/_app/cabins');
 const Cabins = () => {
     const cabinsQuery = useCabins();
     const { page } = cabinRouter.useSearch();
+    const [openCreateCabin, setOpenCreateCabin] = useState(false);
 
     if (cabinsQuery.isError) {
         return <ErrorComponent error={cabinsQuery.error} />;
@@ -26,10 +36,22 @@ const Cabins = () => {
             <div className='mb-5 flex items-center justify-between'>
                 <div className='flex items-center justify-center gap-x-10'>
                     <h1 className='text-2xl font-semibold text-slate-700'>All cabins</h1>
-                    <Button variant={'outline'}>Create new cabin</Button>
-                    <code>Use Dialog component from shadcn</code>
-                    <code>Read react hook form</code>
-                    <code>Take a look at shadcn lib form wrapper for react hook form</code>
+                    <Dialog open={openCreateCabin} onOpenChange={setOpenCreateCabin}>
+                        <DialogTrigger asChild>
+                            <Button variant={'outline'}>Create new cabin</Button>
+                        </DialogTrigger>
+                        <DialogContent aria-describedby={undefined}>
+                            <DialogHeader>
+                                <DialogTitle>New cabin</DialogTitle>
+                            </DialogHeader>
+                            <CabinForm
+                                mode='create'
+                                onSuccess={() => {
+                                    setOpenCreateCabin(false);
+                                }}
+                            />
+                        </DialogContent>
+                    </Dialog>
                 </div>
                 <CabinTableOperations />
             </div>

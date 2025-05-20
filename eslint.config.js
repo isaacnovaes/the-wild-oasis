@@ -137,10 +137,7 @@ export default tseslintPlugin.config(
             'react/destructuring-assignment': 'off',
             'react/jsx-boolean-value': 'warn',
             'react/jsx-child-element-spacing': 'warn',
-            'react/jsx-handler-names': [
-                'warn',
-                { checkLocalVariables: true, checkInlineFunction: false },
-            ],
+            'react/jsx-handler-names': 'off',
             'react/jsx-no-constructed-context-values': 'warn',
             'react/jsx-no-leaked-render': ['warn', { validStrategies: ['ternary', 'coerce'] }],
             'react/jsx-no-useless-fragment': 'warn',

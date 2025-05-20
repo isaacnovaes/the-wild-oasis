@@ -1,6 +1,13 @@
 import { z } from 'zod';
 import supabase, { SUPABASE_URL } from '../supabase';
-import { CabinSchema, type Cabin, type SearchParams } from '../types/global';
+import {
+    CabinImageFileListSchema,
+    CabinImageFileSchema,
+    CabinSchema,
+    type Cabin,
+    type CabinForm,
+    type SearchParams,
+} from '../types/global';
 import { PAGE_SIZE } from '../utils/constants';
 
 export async function getCabins({ page, filter, sortBy }: SearchParams) {
@@ -43,10 +50,23 @@ export async function getCabins({ page, filter, sortBy }: SearchParams) {
     return validation.data;
 }
 
-export async function createEditCabin(newCabin: Partial<Cabin>, id?: number): Promise<Cabin> {
-    const hasImagePath = newCabin.image?.startsWith(SUPABASE_URL);
+export async function createEditCabin({
+    newCabin,
+    id,
+}: {
+    newCabin: Partial<CabinForm>;
+    id?: number;
+}): Promise<Cabin> {
+    const hasImagePath =
+        typeof newCabin.image === 'string' ? newCabin.image.startsWith(SUPABASE_URL) : false;
 
-    const imageName = `${Math.random().toString()}-${newCabin.image?.name}`.replaceAll('/', '');
+    const imageName =
+        newCabin.image instanceof FileList
+            ? `${Math.random().toString()}-${newCabin.image.item(0)?.name ?? ''}`.replaceAll(
+                  '/',
+                  ''
+              )
+            : '';
     const imagePath = hasImagePath
         ? newCabin.image
         : `${SUPABASE_URL}/storage/v1/object/public/cabin-images/${imageName}`;
@@ -77,9 +97,12 @@ export async function createEditCabin(newCabin: Partial<Cabin>, id?: number): Pr
     // 2. Upload image
     if (hasImagePath) return cabinValidation.data;
 
+    const imageFileList = CabinImageFileListSchema.parse(newCabin.image);
+    const imageFileValidation = CabinImageFileSchema.parse(imageFileList.item(0));
+
     const { error: storageError } = await supabase.storage
         .from('cabin-images')
-        .upload(imageName, newCabin.image);
+        .upload(imageName, imageFileValidation);
 
     // 3. Delete the cabin IF there was an error uplaoding image
     if (storageError) {

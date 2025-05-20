@@ -1,5 +1,6 @@
 import { linkOptions, useNavigate, useSearch } from '@tanstack/react-router';
 import type { FilterOption, SearchField, SearchParams } from '../types/global';
+import { Button } from './ui/button';
 
 const _linkOption = linkOptions([
     { to: '/cabins', search: { page: 1 } },
@@ -9,13 +10,13 @@ const _linkOption = linkOptions([
 function Filter({
     filterField,
     options,
-    to,
+    routePath,
 }: {
     readonly options: FilterOption[];
     readonly filterField: SearchField;
-    readonly to: [typeof _linkOption]['0'][number]['to'];
+    readonly routePath: '/cabins' | '/bookings';
 }) {
-    const navigate = useNavigate({ from: to });
+    const navigate = useNavigate({ from: routePath });
     const currentSearch = useSearch({ strict: false });
 
     return (
@@ -30,12 +31,11 @@ function Filter({
                 }
 
                 return (
-                    <button
+                    <Button
                         key={`${option.value}${option.method}`}
-                        aria-disabled={isActive}
-                        className={`rounded-sm border-none p-[0.90rem] text-sm font-medium hover:not-disabled:cursor-pointer hover:not-disabled:bg-indigo-500 hover:not-disabled:text-white aria-disabled:cursor-not-allowed ${isActive ? 'text-indigo-500' : 'text-slate-700'}`}
-                        disabled={isActive}
+                        className={`hover:not-disabled:cursor-pointer aria-disabled:cursor-not-allowed ${isActive ? 'text-indigo-500' : 'text-slate-700'}`}
                         type='button'
+                        variant='link'
                         onClick={() => {
                             const search: SearchParams = { page: 1 };
                             if (option.value !== 'all') {
@@ -49,7 +49,7 @@ function Filter({
                         }}
                     >
                         {option.label}
-                    </button>
+                    </Button>
                 );
             })}
         </div>

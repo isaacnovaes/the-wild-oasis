@@ -74,6 +74,31 @@ export async function getBooking(id: string): Promise<Booking> {
     return validation.data;
 }
 
+export async function updateBooking(id: string, obj: Partial<Booking>) {
+    const { data, error } = await supabase
+        .from('bookings')
+        .update(obj)
+        .eq('id', id)
+        .select()
+        .single();
+
+    if (error) {
+        console.error(error);
+        throw new Error(error.message);
+    }
+
+    const validation = BookingSchema.omit({ cabins: true, guests: true })
+        .extend({ cabinId: z.number().nonnegative(), guestId: z.number().nonnegative() })
+        .safeParse(data);
+
+    if (validation.error) {
+        console.error(validation.error);
+        throw new Error(validation.error.message);
+    }
+
+    return validation.data;
+}
+
 // date: ISOString
 export async function getBookingsAfterDate(date: string) {
     const { data, error } = await supabase
@@ -161,27 +186,29 @@ export async function getStaysTodayActivity(): Promise<Booking[]> {
     return data;
 }
 
-export async function updateBooking(id: string, obj: Partial<Booking>) {
-    const { data, error } = await supabase
-        .from('bookings')
-        .update(obj)
-        .eq('id', id)
-        .select()
-        .single();
-
-    if (error) {
-        console.error(error);
-        throw new Error(error.message);
-    }
-    return data;
-}
-
-export async function deleteBooking(id: string) {
+export async function deleteBooking(id: string, cabinId: string) {
     const { data, error } = await supabase.from('bookings').delete().eq('id', id);
 
     if (error) {
         console.error(error);
         throw new Error(error.message);
     }
-    return data;
+
+    const { error, count } = await supabase
+        .from('bookings')
+        .select('id', { count: 'exact' })
+        .eq('cabinId', cabinId)
+        .single();
+
+    let updateCabin = false;
+    if (count !== null && count <= 0) {
+        const { data, error } = await supabase
+            .from('cabins')
+            .update({ linkedToBooking: false })
+            .eq('id', id)
+            .single();
+        updateCabin = true;
+    }
+
+    return { updateCabin };
 }

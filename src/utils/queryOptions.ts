@@ -8,23 +8,31 @@ import type { SearchParams } from '../types/global';
 export const cabinsQueryOptions = (query: SearchParams) =>
     queryOptions({
         queryKey: ['cabins', query],
-        queryFn: async () => getCabins(query),
+        queryFn: async () => {
+            return getCabins(query);
+        },
         placeholderData: keepPreviousData,
     });
 
 export const bookingsQueryOptions = (query: SearchParams) =>
     queryOptions({
         queryKey: ['bookings', query],
-        queryFn: async () => getBookings(query),
+        queryFn: async () => {
+            return getBookings(query);
+        },
         placeholderData: keepPreviousData,
     });
 
 export const accountQueryOptions = queryOptions({
     queryKey: ['account'],
-    queryFn: async () => getCurrentUser(),
+    queryFn: async () => {
+        return getCurrentUser();
+    },
 });
 
 export const settingsQueryOptions = queryOptions({
     queryKey: ['settings'],
-    queryFn: async () => getSettings(),
+    queryFn: async () => {
+        return getSettings();
+    },
 });

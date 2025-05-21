@@ -1,8 +1,18 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { settingsQueryOptions } from '../../utils/queryOptions';
+import Loading from '@/components/Loading';
+import { useSettings } from '@/utils/hooks';
+import { ErrorComponent } from '@tanstack/react-router';
 
 const Settings = () => {
-    const { data: settings } = useSuspenseQuery(settingsQueryOptions);
+    const settings = useSettings();
+
+    if (settings.isPending) {
+        return <Loading />;
+    }
+
+    if (settings.isError) {
+        return <ErrorComponent error={settings.error} />;
+    }
+
     return (
         <div>
             {Object.entries(settings).map(([key, value]) => (

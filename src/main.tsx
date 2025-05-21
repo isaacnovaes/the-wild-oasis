@@ -37,6 +37,7 @@ type QueryKeys =
     | 'dashboard'
     | 'cabins'
     | 'checkin'
+    | 'checkout'
     | 'settings'
     | 'users';
 

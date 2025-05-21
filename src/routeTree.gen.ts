@@ -10,305 +10,299 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root';
-import { Route as LoginImport } from './routes/login';
-import { Route as AppRouteImport } from './routes/_app/route';
-import { Route as IndexImport } from './routes/index';
-import { Route as AppUsersImport } from './routes/_app/users';
-import { Route as AppSettingsImport } from './routes/_app/settings';
-import { Route as AppDashboardImport } from './routes/_app/dashboard';
-import { Route as AppCheckInbookingIdImport } from './routes/_app/check-in$bookingId';
-import { Route as AppCabinsImport } from './routes/_app/cabins';
-import { Route as AppBookingsImport } from './routes/_app/bookings';
-import { Route as AppAccountImport } from './routes/_app/account';
-import { Route as AppBookingsBookingIdImport } from './routes/_app/bookings.$bookingId';
+import { Route as rootRoute } from './routes/__root'
+import { Route as LoginImport } from './routes/login'
+import { Route as AppRouteImport } from './routes/_app/route'
+import { Route as IndexImport } from './routes/index'
+import { Route as AppUsersImport } from './routes/_app/users'
+import { Route as AppSettingsImport } from './routes/_app/settings'
+import { Route as AppDashboardImport } from './routes/_app/dashboard'
+import { Route as AppCabinsImport } from './routes/_app/cabins'
+import { Route as AppBookingsImport } from './routes/_app/bookings'
+import { Route as AppAccountImport } from './routes/_app/account'
+import { Route as AppCheckInBookingIdImport } from './routes/_app/check-in.$bookingId'
+import { Route as AppBookingBookingIdImport } from './routes/_app/booking.$bookingId'
 
 // Create/Update Routes
 
 const LoginRoute = LoginImport.update({
-    id: '/login',
-    path: '/login',
-    getParentRoute: () => rootRoute,
-} as any);
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AppRouteRoute = AppRouteImport.update({
-    id: '/_app',
-    getParentRoute: () => rootRoute,
-} as any);
+  id: '/_app',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => rootRoute,
-} as any);
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AppUsersRoute = AppUsersImport.update({
-    id: '/users',
-    path: '/users',
-    getParentRoute: () => AppRouteRoute,
-} as any);
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 const AppSettingsRoute = AppSettingsImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => AppRouteRoute,
-} as any);
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 const AppDashboardRoute = AppDashboardImport.update({
-    id: '/dashboard',
-    path: '/dashboard',
-    getParentRoute: () => AppRouteRoute,
-} as any);
-
-const AppCheckInbookingIdRoute = AppCheckInbookingIdImport.update({
-    id: '/check-in$bookingId',
-    path: '/check-in$bookingId',
-    getParentRoute: () => AppRouteRoute,
-} as any);
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 const AppCabinsRoute = AppCabinsImport.update({
-    id: '/cabins',
-    path: '/cabins',
-    getParentRoute: () => AppRouteRoute,
-} as any);
+  id: '/cabins',
+  path: '/cabins',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 const AppBookingsRoute = AppBookingsImport.update({
-    id: '/bookings',
-    path: '/bookings',
-    getParentRoute: () => AppRouteRoute,
-} as any);
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 const AppAccountRoute = AppAccountImport.update({
-    id: '/account',
-    path: '/account',
-    getParentRoute: () => AppRouteRoute,
-} as any);
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
-const AppBookingsBookingIdRoute = AppBookingsBookingIdImport.update({
-    id: '/$bookingId',
-    path: '/$bookingId',
-    getParentRoute: () => AppBookingsRoute,
-} as any);
+const AppCheckInBookingIdRoute = AppCheckInBookingIdImport.update({
+  id: '/check-in/$bookingId',
+  path: '/check-in/$bookingId',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
+const AppBookingBookingIdRoute = AppBookingBookingIdImport.update({
+  id: '/booking/$bookingId',
+  path: '/booking/$bookingId',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
-    interface FileRoutesByPath {
-        '/': {
-            id: '/';
-            path: '/';
-            fullPath: '/';
-            preLoaderRoute: typeof IndexImport;
-            parentRoute: typeof rootRoute;
-        };
-        '/_app': {
-            id: '/_app';
-            path: '';
-            fullPath: '';
-            preLoaderRoute: typeof AppRouteImport;
-            parentRoute: typeof rootRoute;
-        };
-        '/login': {
-            id: '/login';
-            path: '/login';
-            fullPath: '/login';
-            preLoaderRoute: typeof LoginImport;
-            parentRoute: typeof rootRoute;
-        };
-        '/_app/account': {
-            id: '/_app/account';
-            path: '/account';
-            fullPath: '/account';
-            preLoaderRoute: typeof AppAccountImport;
-            parentRoute: typeof AppRouteImport;
-        };
-        '/_app/bookings': {
-            id: '/_app/bookings';
-            path: '/bookings';
-            fullPath: '/bookings';
-            preLoaderRoute: typeof AppBookingsImport;
-            parentRoute: typeof AppRouteImport;
-        };
-        '/_app/cabins': {
-            id: '/_app/cabins';
-            path: '/cabins';
-            fullPath: '/cabins';
-            preLoaderRoute: typeof AppCabinsImport;
-            parentRoute: typeof AppRouteImport;
-        };
-        '/_app/check-in$bookingId': {
-            id: '/_app/check-in$bookingId';
-            path: '/check-in$bookingId';
-            fullPath: '/check-in$bookingId';
-            preLoaderRoute: typeof AppCheckInbookingIdImport;
-            parentRoute: typeof AppRouteImport;
-        };
-        '/_app/dashboard': {
-            id: '/_app/dashboard';
-            path: '/dashboard';
-            fullPath: '/dashboard';
-            preLoaderRoute: typeof AppDashboardImport;
-            parentRoute: typeof AppRouteImport;
-        };
-        '/_app/settings': {
-            id: '/_app/settings';
-            path: '/settings';
-            fullPath: '/settings';
-            preLoaderRoute: typeof AppSettingsImport;
-            parentRoute: typeof AppRouteImport;
-        };
-        '/_app/users': {
-            id: '/_app/users';
-            path: '/users';
-            fullPath: '/users';
-            preLoaderRoute: typeof AppUsersImport;
-            parentRoute: typeof AppRouteImport;
-        };
-        '/_app/bookings/$bookingId': {
-            id: '/_app/bookings/$bookingId';
-            path: '/$bookingId';
-            fullPath: '/bookings/$bookingId';
-            preLoaderRoute: typeof AppBookingsBookingIdImport;
-            parentRoute: typeof AppBookingsImport;
-        };
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
     }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/_app/account': {
+      id: '/_app/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AppAccountImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/_app/bookings': {
+      id: '/_app/bookings'
+      path: '/bookings'
+      fullPath: '/bookings'
+      preLoaderRoute: typeof AppBookingsImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/_app/cabins': {
+      id: '/_app/cabins'
+      path: '/cabins'
+      fullPath: '/cabins'
+      preLoaderRoute: typeof AppCabinsImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/_app/users': {
+      id: '/_app/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AppUsersImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/_app/booking/$bookingId': {
+      id: '/_app/booking/$bookingId'
+      path: '/booking/$bookingId'
+      fullPath: '/booking/$bookingId'
+      preLoaderRoute: typeof AppBookingBookingIdImport
+      parentRoute: typeof AppRouteImport
+    }
+    '/_app/check-in/$bookingId': {
+      id: '/_app/check-in/$bookingId'
+      path: '/check-in/$bookingId'
+      fullPath: '/check-in/$bookingId'
+      preLoaderRoute: typeof AppCheckInBookingIdImport
+      parentRoute: typeof AppRouteImport
+    }
+  }
 }
 
 // Create and export the route tree
 
-interface AppBookingsRouteChildren {
-    AppBookingsBookingIdRoute: typeof AppBookingsBookingIdRoute;
-}
-
-const AppBookingsRouteChildren: AppBookingsRouteChildren = {
-    AppBookingsBookingIdRoute: AppBookingsBookingIdRoute,
-};
-
-const AppBookingsRouteWithChildren = AppBookingsRoute._addFileChildren(AppBookingsRouteChildren);
-
 interface AppRouteRouteChildren {
-    AppAccountRoute: typeof AppAccountRoute;
-    AppBookingsRoute: typeof AppBookingsRouteWithChildren;
-    AppCabinsRoute: typeof AppCabinsRoute;
-    AppCheckInbookingIdRoute: typeof AppCheckInbookingIdRoute;
-    AppDashboardRoute: typeof AppDashboardRoute;
-    AppSettingsRoute: typeof AppSettingsRoute;
-    AppUsersRoute: typeof AppUsersRoute;
+  AppAccountRoute: typeof AppAccountRoute
+  AppBookingsRoute: typeof AppBookingsRoute
+  AppCabinsRoute: typeof AppCabinsRoute
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppUsersRoute: typeof AppUsersRoute
+  AppBookingBookingIdRoute: typeof AppBookingBookingIdRoute
+  AppCheckInBookingIdRoute: typeof AppCheckInBookingIdRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
-    AppAccountRoute: AppAccountRoute,
-    AppBookingsRoute: AppBookingsRouteWithChildren,
-    AppCabinsRoute: AppCabinsRoute,
-    AppCheckInbookingIdRoute: AppCheckInbookingIdRoute,
-    AppDashboardRoute: AppDashboardRoute,
-    AppSettingsRoute: AppSettingsRoute,
-    AppUsersRoute: AppUsersRoute,
-};
+  AppAccountRoute: AppAccountRoute,
+  AppBookingsRoute: AppBookingsRoute,
+  AppCabinsRoute: AppCabinsRoute,
+  AppDashboardRoute: AppDashboardRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppUsersRoute: AppUsersRoute,
+  AppBookingBookingIdRoute: AppBookingBookingIdRoute,
+  AppCheckInBookingIdRoute: AppCheckInBookingIdRoute,
+}
 
-const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(AppRouteRouteChildren);
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
 
 export interface FileRoutesByFullPath {
-    '/': typeof IndexRoute;
-    '': typeof AppRouteRouteWithChildren;
-    '/login': typeof LoginRoute;
-    '/account': typeof AppAccountRoute;
-    '/bookings': typeof AppBookingsRouteWithChildren;
-    '/cabins': typeof AppCabinsRoute;
-    '/check-in$bookingId': typeof AppCheckInbookingIdRoute;
-    '/dashboard': typeof AppDashboardRoute;
-    '/settings': typeof AppSettingsRoute;
-    '/users': typeof AppUsersRoute;
-    '/bookings/$bookingId': typeof AppBookingsBookingIdRoute;
+  '/': typeof IndexRoute
+  '': typeof AppRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/account': typeof AppAccountRoute
+  '/bookings': typeof AppBookingsRoute
+  '/cabins': typeof AppCabinsRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/settings': typeof AppSettingsRoute
+  '/users': typeof AppUsersRoute
+  '/booking/$bookingId': typeof AppBookingBookingIdRoute
+  '/check-in/$bookingId': typeof AppCheckInBookingIdRoute
 }
 
 export interface FileRoutesByTo {
-    '/': typeof IndexRoute;
-    '': typeof AppRouteRouteWithChildren;
-    '/login': typeof LoginRoute;
-    '/account': typeof AppAccountRoute;
-    '/bookings': typeof AppBookingsRouteWithChildren;
-    '/cabins': typeof AppCabinsRoute;
-    '/check-in$bookingId': typeof AppCheckInbookingIdRoute;
-    '/dashboard': typeof AppDashboardRoute;
-    '/settings': typeof AppSettingsRoute;
-    '/users': typeof AppUsersRoute;
-    '/bookings/$bookingId': typeof AppBookingsBookingIdRoute;
+  '/': typeof IndexRoute
+  '': typeof AppRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/account': typeof AppAccountRoute
+  '/bookings': typeof AppBookingsRoute
+  '/cabins': typeof AppCabinsRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/settings': typeof AppSettingsRoute
+  '/users': typeof AppUsersRoute
+  '/booking/$bookingId': typeof AppBookingBookingIdRoute
+  '/check-in/$bookingId': typeof AppCheckInBookingIdRoute
 }
 
 export interface FileRoutesById {
-    __root__: typeof rootRoute;
-    '/': typeof IndexRoute;
-    '/_app': typeof AppRouteRouteWithChildren;
-    '/login': typeof LoginRoute;
-    '/_app/account': typeof AppAccountRoute;
-    '/_app/bookings': typeof AppBookingsRouteWithChildren;
-    '/_app/cabins': typeof AppCabinsRoute;
-    '/_app/check-in$bookingId': typeof AppCheckInbookingIdRoute;
-    '/_app/dashboard': typeof AppDashboardRoute;
-    '/_app/settings': typeof AppSettingsRoute;
-    '/_app/users': typeof AppUsersRoute;
-    '/_app/bookings/$bookingId': typeof AppBookingsBookingIdRoute;
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/_app': typeof AppRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_app/account': typeof AppAccountRoute
+  '/_app/bookings': typeof AppBookingsRoute
+  '/_app/cabins': typeof AppCabinsRoute
+  '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/users': typeof AppUsersRoute
+  '/_app/booking/$bookingId': typeof AppBookingBookingIdRoute
+  '/_app/check-in/$bookingId': typeof AppCheckInBookingIdRoute
 }
 
 export interface FileRouteTypes {
-    fileRoutesByFullPath: FileRoutesByFullPath;
-    fullPaths:
-        | '/'
-        | ''
-        | '/login'
-        | '/account'
-        | '/bookings'
-        | '/cabins'
-        | '/check-in$bookingId'
-        | '/dashboard'
-        | '/settings'
-        | '/users'
-        | '/bookings/$bookingId';
-    fileRoutesByTo: FileRoutesByTo;
-    to:
-        | '/'
-        | ''
-        | '/login'
-        | '/account'
-        | '/bookings'
-        | '/cabins'
-        | '/check-in$bookingId'
-        | '/dashboard'
-        | '/settings'
-        | '/users'
-        | '/bookings/$bookingId';
-    id:
-        | '__root__'
-        | '/'
-        | '/_app'
-        | '/login'
-        | '/_app/account'
-        | '/_app/bookings'
-        | '/_app/cabins'
-        | '/_app/check-in$bookingId'
-        | '/_app/dashboard'
-        | '/_app/settings'
-        | '/_app/users'
-        | '/_app/bookings/$bookingId';
-    fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | ''
+    | '/login'
+    | '/account'
+    | '/bookings'
+    | '/cabins'
+    | '/dashboard'
+    | '/settings'
+    | '/users'
+    | '/booking/$bookingId'
+    | '/check-in/$bookingId'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | ''
+    | '/login'
+    | '/account'
+    | '/bookings'
+    | '/cabins'
+    | '/dashboard'
+    | '/settings'
+    | '/users'
+    | '/booking/$bookingId'
+    | '/check-in/$bookingId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/login'
+    | '/_app/account'
+    | '/_app/bookings'
+    | '/_app/cabins'
+    | '/_app/dashboard'
+    | '/_app/settings'
+    | '/_app/users'
+    | '/_app/booking/$bookingId'
+    | '/_app/check-in/$bookingId'
+  fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-    IndexRoute: typeof IndexRoute;
-    AppRouteRoute: typeof AppRouteRouteWithChildren;
-    LoginRoute: typeof LoginRoute;
+  IndexRoute: typeof IndexRoute
+  AppRouteRoute: typeof AppRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-    IndexRoute: IndexRoute,
-    AppRouteRoute: AppRouteRouteWithChildren,
-    LoginRoute: LoginRoute,
-};
+  IndexRoute: IndexRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
+}
 
 export const routeTree = rootRoute
-    ._addFileChildren(rootRouteChildren)
-    ._addFileTypes<FileRouteTypes>();
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {
@@ -330,10 +324,11 @@ export const routeTree = rootRoute
         "/_app/account",
         "/_app/bookings",
         "/_app/cabins",
-        "/_app/check-in$bookingId",
         "/_app/dashboard",
         "/_app/settings",
-        "/_app/users"
+        "/_app/users",
+        "/_app/booking/$bookingId",
+        "/_app/check-in/$bookingId"
       ]
     },
     "/login": {
@@ -345,17 +340,10 @@ export const routeTree = rootRoute
     },
     "/_app/bookings": {
       "filePath": "_app/bookings.tsx",
-      "parent": "/_app",
-      "children": [
-        "/_app/bookings/$bookingId"
-      ]
+      "parent": "/_app"
     },
     "/_app/cabins": {
       "filePath": "_app/cabins.tsx",
-      "parent": "/_app"
-    },
-    "/_app/check-in$bookingId": {
-      "filePath": "_app/check-in$bookingId.tsx",
       "parent": "/_app"
     },
     "/_app/dashboard": {
@@ -370,9 +358,13 @@ export const routeTree = rootRoute
       "filePath": "_app/users.tsx",
       "parent": "/_app"
     },
-    "/_app/bookings/$bookingId": {
-      "filePath": "_app/bookings.$bookingId.tsx",
-      "parent": "/_app/bookings"
+    "/_app/booking/$bookingId": {
+      "filePath": "_app/booking.$bookingId.tsx",
+      "parent": "/_app"
+    },
+    "/_app/check-in/$bookingId": {
+      "filePath": "_app/check-in.$bookingId.tsx",
+      "parent": "/_app"
     }
   }
 }

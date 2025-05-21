@@ -2,6 +2,7 @@ import { isFuture, isPast, isToday } from 'date-fns';
 import { useState } from 'react';
 import supabase from '../supabase.ts';
 
+import type { Booking } from '../types/global.ts';
 import { subtractDates } from '../utils/helpers.ts';
 import { bookings } from './data-bookings';
 import { cabins } from './data-cabins';
@@ -35,13 +36,13 @@ async function createCabins() {
 async function createBookings() {
     // Bookings need a guestId and a cabinId. We can't tell Supabase IDs for each object, it will calculate them on its own. So it might be different for different people, especially after multiple uploads. Therefore, we need to first get all guestIds and cabinIds, and then replace the original IDs in the booking data with the actual ones from the DB
     const { data: guestsIds } = await supabase.from('guests').select('id').order('id');
-    const allGuestIds = guestsIds.map((cabin) => cabin.id);
+    const allGuestIds = guestsIds?.map((guest) => guest.id);
     const { data: cabinsIds } = await supabase.from('cabins').select('id').order('id');
 
-    const allCabinIds = cabinsIds.map((cabin) => cabin.id);
+    const allCabinIds = cabinsIds?.map((cabin) => cabin.id);
 
-    const finalBookings = bookings.map((booking) => {
-        // Here relying on the order of cabins, as they don't have and ID yet
+    const finalBookings = bookings.map((booking): Booking => {
+        // Here relying on the order of cabins, as they don't have an ID yet
         const cabin = cabins.at(booking.cabinId - 1);
         const numNights = subtractDates(booking.endDate, booking.startDate);
         const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);
@@ -71,8 +72,6 @@ async function createBookings() {
             status,
         };
     });
-
-    console.log(finalBookings);
 
     const { error } = await supabase.from('bookings').insert(finalBookings);
     if (error) console.log(error.message);
@@ -118,11 +117,21 @@ function Uploader() {
         >
             <h3>SAMPLE DATA</h3>
 
-            <button disabled={isLoading} type='button' onClick={uploadAll}>
+            <button
+                className='cursor-pointer rounded-md border-2 border-indigo-400 p-2 hover:border-indigo-700'
+                disabled={isLoading}
+                type='button'
+                onClick={uploadAll}
+            >
                 Upload ALL
             </button>
 
-            <button disabled={isLoading} type='button' onClick={uploadBookings}>
+            <button
+                className='cursor-pointer rounded-md border-2 border-indigo-400 p-2 hover:border-indigo-700'
+                disabled={isLoading}
+                type='button'
+                onClick={uploadBookings}
+            >
                 Upload bookings ONLY
             </button>
         </div>

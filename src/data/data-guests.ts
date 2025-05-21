@@ -1,6 +1,8 @@
 // Search for: 'jo', 'fa', 'mar', 'emm', 'ah'
 
-export const guests = [
+import type { Guest } from '../types/global';
+
+export const guests: Omit<Guest, 'created_at' | 'id'>[] = [
     {
         // id: 1000,
         fullName: 'Jonas Schmedtmann',

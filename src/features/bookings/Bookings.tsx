@@ -1,3 +1,4 @@
+import PageHeader from '@/components/PageHeader';
 import { ErrorComponent, getRouteApi } from '@tanstack/react-router';
 import Loading from '../../components/Loading';
 import Pagination from '../../components/Pagination';
@@ -22,12 +23,12 @@ const Bookings = () => {
 
     return (
         <div>
-            <div className='mb-5 flex items-center justify-between'>
-                <h1 className='text-2xl font-semibold text-slate-700'>All bookings</h1>
+            <PageHeader title='All bookings'>
                 <BookingTableOperations />
-            </div>
-            <Table columns='grid-cols-[0.6fr_2fr_2.4fr_1.4fr_1fr_3.2rem]'>
+            </PageHeader>
+            <Table columns='grid-cols-[0.6fr_0.6fr_2fr_2.4fr_1.4fr_1fr_3.2rem]'>
                 <Table.Header>
+                    <div>Id</div>
                     <div>Cabin id</div>
                     <div>Guest</div>
                     <div>Dates</div>

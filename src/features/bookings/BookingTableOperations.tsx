@@ -20,11 +20,19 @@ const sortByOptions: SelectOption[] = [
     { value: 'all', label: 'Sort fields' },
     {
         value: 'startDate-desc',
-        label: 'Sort by date (recent first)',
+        label: 'Sort by start date (recent first)',
     },
     {
         value: 'startDate-asc',
-        label: 'Sort by date (earlier first)',
+        label: 'Sort by start date (earlier first)',
+    },
+    {
+        value: 'id-desc',
+        label: 'Sort by id (high first)',
+    },
+    {
+        value: 'id-asc',
+        label: 'Sort by id (low first)',
     },
     {
         value: 'totalPrice-desc',
@@ -40,7 +48,7 @@ const BookingTableOperations = () => {
     const navigate = getRouteApi('/_app/bookings').useNavigate();
     return (
         <TableOperations>
-            <Filter filterField='status' options={filterOptions} to='/bookings' />
+            <Filter filterField='status' options={filterOptions} routePath='/bookings' />
             <SortBy
                 handleChange={(e) => {
                     void navigate({

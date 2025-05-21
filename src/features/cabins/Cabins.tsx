@@ -1,3 +1,4 @@
+import PageHeader from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -20,9 +21,9 @@ import CabinTableOperations from './CabinTableOperations';
 const cabinRouter = getRouteApi('/_app/cabins');
 
 const Cabins = () => {
+    const [openCreateCabin, setOpenCreateCabin] = useState(false);
     const cabinsQuery = useCabins();
     const { page } = cabinRouter.useSearch();
-    const [openCreateCabin, setOpenCreateCabin] = useState(false);
 
     if (cabinsQuery.isError) {
         return <ErrorComponent error={cabinsQuery.error} />;
@@ -33,9 +34,8 @@ const Cabins = () => {
 
     return (
         <div>
-            <div className='mb-5 flex items-center justify-between'>
-                <div className='flex items-center justify-center gap-x-10'>
-                    <h1 className='text-2xl font-semibold text-slate-700'>All cabins</h1>
+            <PageHeader
+                button={
                     <Dialog open={openCreateCabin} onOpenChange={setOpenCreateCabin}>
                         <DialogTrigger asChild>
                             <Button variant={'outline'}>Create new cabin</Button>
@@ -52,9 +52,11 @@ const Cabins = () => {
                             />
                         </DialogContent>
                     </Dialog>
-                </div>
+                }
+                title='All cabins'
+            >
                 <CabinTableOperations />
-            </div>
+            </PageHeader>
             <Table columns='grid-cols-[0.6fr_1fr_2fr_1.5fr_1fr_1fr_3.2rem]'>
                 <Table.Header>
                     <div />

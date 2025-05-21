@@ -12,7 +12,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         <div className='h-dvh w-full text-slate-700 **:focus-visible:outline-indigo-500 **:motion-safe:transition-colors **:motion-safe:ease-in'>
             <Outlet />
             <TanStackRouterDevtools />
-            <Toaster />
+            <Toaster toastOptions={{ duration: 5000 }} />
         </div>
     ),
 });

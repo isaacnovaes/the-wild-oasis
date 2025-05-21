@@ -23,6 +23,14 @@ const sortOptions: SelectOption[] = [
     },
     { value: 'name-desc', label: 'Sort by name (Z-A)' },
     {
+        value: 'id-desc',
+        label: 'Sort by id (high first)',
+    },
+    {
+        value: 'id-asc',
+        label: 'Sort by id (low first)',
+    },
+    {
         value: 'regularPrice-asc',
         label: 'Sort by price (low first)',
     },

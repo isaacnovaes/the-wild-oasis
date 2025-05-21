@@ -44,19 +44,19 @@ const CabinRowOperations = ({ cabin }: { readonly cabin: Cabin }) => {
             void queryClient.invalidateQueries({ queryKey: ['cabins'] });
         },
         onError: (error) => {
-            toast.error(error.message, { duration: 8000 });
+            toast.error(error.message);
         },
     });
 
     const deleteCabinMutation = useMutation({
         mutationFn: deleteCabin,
         mutationKey: ['cabins', 'delete', cabin.id],
-        onSuccess: () => {
-            toast.success('Cabin deleted');
+        onSuccess: (_data, variables) => {
+            toast.success(`Cabin ${variables.toString()} deleted`);
             void queryClient.invalidateQueries({ queryKey: ['cabins'] });
         },
         onError: (error) => {
-            toast.error(error.message, { duration: 8000 });
+            toast.error(error.message);
         },
     });
 

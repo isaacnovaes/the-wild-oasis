@@ -1,44 +1,40 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { ComponentPropsWithoutRef } from 'react';
-import type { FieldValues, Path, UseFormRegister } from 'react-hook-form';
+import type { FieldValues, UseFormRegister } from 'react-hook-form';
 
-interface InputProps<T extends FieldValues>
-    extends Omit<ComponentPropsWithoutRef<'input'>, 'name'> {
+interface BasicProps extends ComponentPropsWithoutRef<'input'> {
     readonly label: string;
-    readonly name: Path<T>;
-    readonly register: UseFormRegister<T>;
-    readonly error: string | undefined;
-    readonly isFormDirty: boolean;
-    readonly valueAsNumber?: boolean;
+    readonly error?: string;
 }
 
-const FormItem = <T extends FieldValues>({
-    label,
-    name,
-    valueAsNumber,
-    register,
-    error,
-    id,
-    isFormDirty,
-    ...rest
-}: InputProps<T>) => {
+interface RegisteredProps<T extends FieldValues>
+    extends Omit<BasicProps, keyof ReturnType<UseFormRegister<T>>> {
+    readonly isFormDirty?: boolean;
+    readonly inputType: 'registered';
+}
+
+interface ControlledProps extends BasicProps {
+    readonly inputType: 'controlled';
+}
+
+type InputProps<T extends FieldValues> = RegisteredProps<T> | ControlledProps;
+
+const FormItem = <T extends FieldValues>(props: InputProps<T>) => {
+    const { label, id, error, inputType, isFormDirty, ...rest } = props;
+    const isDirty = inputType === 'registered' ? isFormDirty : false;
+
     return (
         <div className={`my-4 flex flex-col`}>
             <Label className='flex items-center py-1' htmlFor={id}>
                 {label}
             </Label>
             <span
-                className={`text-xs font-medium text-red-500 ${error && isFormDirty ? 'animate-shake' : 'invisible'}`}
+                className={`text-xs font-medium text-red-500 ${error && isDirty ? 'animate-shake' : 'invisible'}`}
             >
-                {isFormDirty && error ? error : 'No error'}
+                {isDirty && error ? error : ''}
             </span>
-            <Input
-                aria-invalid={Boolean(error && isFormDirty)}
-                {...register(name, { valueAsNumber })}
-                {...rest}
-                id={id}
-            />
+            <Input aria-invalid={Boolean(error && isDirty)} {...rest} id={id} />
         </div>
     );
 };

@@ -38,7 +38,7 @@ const CabinRowOperations = ({ cabin }: { readonly cabin: Cabin }) => {
 
     const duplicateCabinMutation = useMutation({
         mutationFn: createEditCabin,
-        mutationKey: ['cabins', 'duplicate', cabin.id],
+        mutationKey: ['cabins', 'duplicate'],
         onSuccess: () => {
             toast.success('Cabin duplicated');
             void queryClient.invalidateQueries({ queryKey: ['cabins'] });
@@ -50,7 +50,7 @@ const CabinRowOperations = ({ cabin }: { readonly cabin: Cabin }) => {
 
     const deleteCabinMutation = useMutation({
         mutationFn: deleteCabin,
-        mutationKey: ['cabins', 'delete', cabin.id],
+        mutationKey: ['cabins', 'delete'],
         onSuccess: (_data, variables) => {
             toast.success(`Cabin ${variables.toString()} deleted`);
             void queryClient.invalidateQueries({ queryKey: ['cabins'] });

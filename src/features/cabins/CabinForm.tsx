@@ -41,9 +41,7 @@ const CabinForm = (props: Props) => {
         onSuccess: (cabin) => {
             void queryClient.invalidateQueries({ queryKey: ['cabins'] });
             toast.success(
-                props.mode === 'create'
-                    ? `Cabin ${cabin.id.toString()} created`
-                    : `Cabin ${cabin.id.toString()} edited`
+                `Cabin ${cabin.id.toString()} ${props.mode === 'create' ? 'created' : 'edited'}`
             );
             props.onSuccess();
         },
@@ -70,64 +68,63 @@ const CabinForm = (props: Props) => {
             <FormItem
                 error={errors.name?.message}
                 id='name'
+                inputType='registered'
                 isFormDirty={isDirty}
                 label='Cabin name'
-                name='name'
                 placeholder='Name'
-                register={register}
+                {...register('name')}
             />
             <FormItem
                 error={errors.maxCapacity?.message}
                 id='maxCapacity'
                 inputMode='decimal'
+                inputType='registered'
                 isFormDirty={isDirty}
                 label='Max capacity'
-                name='maxCapacity'
-                register={register}
+                {...register('maxCapacity', { valueAsNumber: true })}
                 step='0.01'
                 type='number'
-                valueAsNumber
             />
             <FormItem
                 error={errors.regularPrice?.message}
                 id='regularPrice'
                 inputMode='decimal'
+                inputType='registered'
                 isFormDirty={isDirty}
                 label='Regular price'
-                name='regularPrice'
-                register={register}
+                {...register('regularPrice', { valueAsNumber: true })}
                 step='0.01'
                 type='number'
-                valueAsNumber
             />
             <FormItem
                 error={errors.discount?.message}
                 id='discount'
                 inputMode='decimal'
+                inputType='registered'
                 isFormDirty={isDirty}
                 label='Discount'
-                name='discount'
-                register={register}
+                {...register('discount', {
+                    valueAsNumber: true,
+                })}
                 step='0.01'
                 type='number'
-                valueAsNumber
             />
             <FormItem
                 error={errors.description?.message}
                 id='description'
+                inputType='registered'
                 isFormDirty={isDirty}
                 label='Cabin description'
-                name='description'
+                {...register('description')}
                 placeholder='Description'
-                register={register}
             />
             <FormItem
                 error={errors.image?.message}
                 id='image'
+                inputType='registered'
                 isFormDirty={isDirty}
                 label='Cabin photo'
-                name='image'
-                register={register}
+                {...register('image')}
                 type='file'
             />
             <div className='flex items-center justify-between'>

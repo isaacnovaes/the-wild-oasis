@@ -3,7 +3,7 @@ import Loading from '@/components/Loading';
 import PageHeader from '@/components/PageHeader';
 import Tag from '@/components/Tag';
 import { Button } from '@/components/ui/button';
-import { useBooking, useCheckOut } from '@/utils/hooks';
+import { useBooking, useCheckOut, useDeleteBookingMutation } from '@/utils/hooks';
 import { ErrorComponent, getRouteApi, Link, useRouter } from '@tanstack/react-router';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import BookingDetail from './BookingDetail';
@@ -15,8 +15,8 @@ const Booking = () => {
     const navigate = routeApi.useNavigate();
     const router = useRouter();
     const bookingQuery = useBooking(bookingId);
-
     const checkoutMutation = useCheckOut();
+    const deleteBookingMutation = useDeleteBookingMutation();
 
     if (bookingQuery.isPending) {
         return <Loading />;
@@ -26,9 +26,12 @@ const Booking = () => {
         return <ErrorComponent error={bookingQuery.error} />;
     }
 
-    const { status } = bookingQuery.data;
+    const {
+        status,
+        cabins: { id: cabinId },
+    } = bookingQuery.data;
 
-    const disabled = checkoutMutation.isPending;
+    const disabled = checkoutMutation.isPending || deleteBookingMutation.isPending;
 
     return (
         <div className=''>
@@ -66,7 +69,23 @@ const Booking = () => {
                         <ArrowUp /> Check out
                     </Button>
                 )}
-                <Button disabled={disabled} size={'lg'} variant={'destructive'}>
+                <Button
+                    disabled={disabled}
+                    size={'lg'}
+                    variant={'destructive'}
+                    onClick={() => {
+                        deleteBookingMutation.mutate(
+                            {
+                                id: bookingId,
+                                cabinId: cabinId.toString(),
+                            },
+                            {
+                                onSuccess: () =>
+                                    void navigate({ to: '/bookings', search: { page: 1 } }),
+                            }
+                        );
+                    }}
+                >
                     Delete
                 </Button>
                 <Button

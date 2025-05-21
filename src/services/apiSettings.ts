@@ -2,14 +2,14 @@ import supabase from '../supabase';
 import { SettingsSchema, type Settings } from '../types/global';
 
 export async function getSettings(): Promise<Settings> {
-    const { data, error } = await supabase.from('settings').select('*').single();
+    const response = await supabase.from('settings').select('*').single();
 
-    if (error) {
-        console.error(error);
-        throw new Error(error.message);
+    if (response.error) {
+        console.error(response.error);
+        throw new Error(response.error.message);
     }
 
-    const validation = SettingsSchema.safeParse(data);
+    const validation = SettingsSchema.safeParse(response.data);
 
     if (validation.error) {
         console.error(validation.error);

@@ -7,7 +7,7 @@ import { formatCurrency } from '@/utils/helpers';
 import { useBooking, useCheckIn, useSettings } from '@/utils/hooks';
 import { ErrorComponent, getRouteApi, useRouter } from '@tanstack/react-router';
 import { ArrowDown } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BookingDetail from './BookingDetail';
 
 const routeApi = getRouteApi('/_app/check-in/$bookingId');
@@ -22,6 +22,12 @@ const Checkin = () => {
     const settingsQuery = useSettings();
     const router = useRouter();
 
+    useEffect(() => {
+        if (bookingQuery.data?.hasBreakfast) {
+            setAddBreakfast(true);
+        }
+    }, [bookingQuery.isPending, bookingQuery.data?.hasBreakfast]);
+
     if (bookingQuery.isPending || settingsQuery.isPending) {
         return <Loading />;
     }
@@ -34,10 +40,16 @@ const Checkin = () => {
         numNights,
         numGuests,
         guests: { fullName },
-        totalPrice,
+        cabinPrice,
+        isPaid,
+        hasBreakfast,
+        extrasPrice,
     } = bookingQuery.data;
 
-    const optionalBreakfastPrice = settingsQuery.data.breakfastPrince * numNights * numGuests;
+    const totalPrice = cabinPrice * numNights;
+    const optionalBreakfastPrice = hasBreakfast
+        ? extrasPrice
+        : settingsQuery.data.breakfastPrice * numNights * numGuests;
     const totalWithBreakfastPrice = totalPrice + optionalBreakfastPrice;
 
     const disabled = checkInMutation.isPending;
@@ -45,32 +57,27 @@ const Checkin = () => {
     function handleCheckin() {
         if (!confirmPaid) return;
 
-        if (addBreakfast) {
-            checkInMutation.mutate(
-                {
-                    bookingId,
-                    breakfastInfo: {
-                        hasBreakfast: true,
-                        extrasPrice: optionalBreakfastPrice,
-                        totalPrice: totalPrice + optionalBreakfastPrice,
-                    },
+        checkInMutation.mutate(
+            {
+                bookingId,
+                breakfastInfo: addBreakfast
+                    ? {
+                          hasBreakfast: true,
+                          extrasPrice: optionalBreakfastPrice,
+                          totalPrice: totalPrice + optionalBreakfastPrice,
+                      }
+                    : {
+                          hasBreakfast: isPaid ? hasBreakfast : false,
+                          extrasPrice: 0,
+                          totalPrice: cabinPrice * numNights,
+                      },
+            },
+            {
+                onSuccess: () => {
+                    void navigate({ to: '/bookings', search: { page: 1 } });
                 },
-                {
-                    onSuccess: async () => {
-                        void navigate({ to: '/bookings', search: { page: 1 } });
-                    },
-                }
-            );
-        } else {
-            checkInMutation.mutate(
-                { bookingId },
-                {
-                    onSuccess: async () => {
-                        void navigate({ to: '/bookings', search: { page: 1 } });
-                    },
-                }
-            );
-        }
+            }
+        );
     }
 
     return (
@@ -79,29 +86,32 @@ const Checkin = () => {
                 <Back />
             </PageHeader>
             <BookingDetail booking={bookingQuery.data} />
+
             <section className='mt-5 space-y-5'>
-                <div className='flex items-center gap-x-5 rounded-sm bg-white px-5 py-5'>
-                    <Checkbox
-                        checked={addBreakfast}
-                        id='terms1'
-                        onCheckedChange={() => {
-                            setAddBreakfast((cur) => !cur);
-                            setConfirmPaid(false);
-                        }}
-                    />
-                    <div className='grid gap-1.5 leading-none'>
-                        <label
-                            className='text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
-                            htmlFor='terms1'
-                        >
-                            Want to add breakfast for {formatCurrency(optionalBreakfastPrice)}
-                        </label>
+                {isPaid && hasBreakfast ? null : (
+                    <div className='flex items-center gap-x-5 rounded-sm bg-white px-5 py-5'>
+                        <Checkbox
+                            checked={addBreakfast}
+                            id='terms1'
+                            onCheckedChange={() => {
+                                setAddBreakfast((cur) => !cur);
+                                setConfirmPaid(false);
+                            }}
+                        />
+                        <div className='grid gap-1.5 leading-none'>
+                            <label
+                                className='text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+                                htmlFor='terms1'
+                            >
+                                Want to add breakfast for {formatCurrency(optionalBreakfastPrice)}
+                            </label>
+                        </div>
                     </div>
-                </div>
+                )}
                 <div className='flex items-center gap-x-5 rounded-sm bg-white px-5 py-5'>
                     <Checkbox
                         checked={confirmPaid}
-                        disabled={confirmPaid}
+                        disabled={isPaid ? false : confirmPaid}
                         id='terms1'
                         onCheckedChange={() => {
                             setConfirmPaid((cur) => !cur);
@@ -120,6 +130,7 @@ const Checkin = () => {
                     </div>
                 </div>
             </section>
+
             <div className='mt-4 flex items-center justify-end space-x-3'>
                 <Button disabled={disabled || !confirmPaid} onClick={handleCheckin}>
                     <ArrowDown /> Check in

@@ -79,9 +79,9 @@ const BookingDetail = (props: { readonly booking: Booking }) => {
                     >
                         {formatCurrency(totalPrice)}
                         {hasBreakfast
-                            ? ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
+                            ? ` (${formatCurrency(cabinPrice * numNights)} cabin + ${formatCurrency(
                                   extrasPrice
-                              )} breakfast)`
+                              )} ${isPaid ? 'breakfast at time of payment)' : 'breakfast)'}`
                             : null}
                     </DataItem>
 

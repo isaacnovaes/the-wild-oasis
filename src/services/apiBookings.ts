@@ -8,7 +8,7 @@ export async function getBookings({ filter, sortBy, page }: SearchParams) {
     let query = supabase
         .from('bookings')
         .select(
-            'id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice, cabins(id), guests(fullName, email)',
+            'id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice,cabinId, guestId, cabins(id), guests(fullName, email)',
             { count: 'exact' }
         );
     // FILTER
@@ -186,27 +186,35 @@ export async function getStaysTodayActivity(): Promise<Booking[]> {
     return data;
 }
 
-export async function deleteBooking(id: string, cabinId: string) {
-    const { data, error } = await supabase.from('bookings').delete().eq('id', id);
-
-    if (error) {
-        console.error(error);
-        throw new Error(error.message);
+export async function deleteBooking({ cabinId, id }: { id: string; cabinId: string }) {
+    const { error: bookingsError1 } = await supabase.from('bookings').delete().eq('id', id);
+    if (bookingsError1) {
+        console.error(bookingsError1);
+        throw new Error(bookingsError1.message);
     }
 
-    const { error, count } = await supabase
+    const { error: bookingsError2, count } = await supabase
         .from('bookings')
         .select('id', { count: 'exact' })
-        .eq('cabinId', cabinId)
-        .single();
+        .eq('cabinId', cabinId);
+
+    if (bookingsError2) {
+        console.error(bookingsError2);
+        throw new Error(bookingsError2.message);
+    }
 
     let updateCabin = false;
+
     if (count !== null && count <= 0) {
-        const { data, error } = await supabase
+        const { error: cabinsError1 } = await supabase
             .from('cabins')
             .update({ linkedToBooking: false })
-            .eq('id', id)
-            .single();
+            .eq('id', cabinId);
+        if (cabinsError1) {
+            console.error(cabinsError1);
+            throw new Error(cabinsError1.message);
+        }
+
         updateCabin = true;
     }
 

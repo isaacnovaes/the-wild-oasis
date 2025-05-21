@@ -35,4 +35,5 @@ export const settingsQueryOptions = queryOptions({
     queryFn: async () => {
         return getSettings();
     },
+    staleTime: 0,
 });

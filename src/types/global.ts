@@ -20,6 +20,7 @@ export const CabinSchema = z.object({
     image: z.string().min(3, 'Min 4 characters'),
     linkedToBooking: z.boolean(),
 });
+
 export type Cabin = z.infer<typeof CabinSchema>;
 
 export const CabinImageFileListSchema = z
@@ -35,9 +36,14 @@ export const CabinFormSchema = CabinSchema.omit({
     created_at: true,
     image: true,
     linkedToBooking: true,
-}).extend({
-    image: z.union([z.string().min(3, 'Min 4 characters'), CabinImageFileListSchema]),
-});
+})
+    .extend({
+        image: z.union([z.string().min(3, 'Min 4 characters'), CabinImageFileListSchema]),
+    })
+    .refine((c) => c.discount < c.regularPrice, {
+        message: 'Discount should be less than regular price',
+        path: ['discount'],
+    });
 
 export type CabinForm = z.infer<typeof CabinFormSchema>;
 
@@ -66,10 +72,31 @@ export const BookingSchema = z.object({
     isPaid: z.boolean(),
     observations: z.string().optional(),
     totalPrice: z.number(),
+    cabinId: z
+        .number({ message: 'Should be a number' })
+        .nonnegative('Negative value is not accepted')
+        .int('Only integers'),
+    guestId: z
+        .number({ message: 'Should be a number' })
+        .nonnegative('Negative value is not accepted')
+        .int('Only integers'),
     cabins: CabinSchema,
     guests: GuestSchema,
 });
 export type Booking = z.infer<typeof BookingSchema>;
+
+export const BookingFormSchema = BookingSchema.omit({
+    id: true, // created in db
+    created_at: true, // created in db
+    cabinPrice: true, // handled in the api
+    extrasPrice: true, // handled in the api
+    status: true, // handled in the api
+    totalPrice: true, // handled in the api
+    cabins: true, // only cabinId is needed
+    guests: true, // only guestId is needed
+});
+
+export type BookingForm = z.infer<typeof BookingFormSchema>;
 
 export const BookingRowSchema = BookingSchema.pick({
     id: true,
@@ -93,7 +120,7 @@ export const BookingRowSchema = BookingSchema.pick({
 export type BookingRow = z.infer<typeof BookingRowSchema>;
 
 export const SettingsSchema = z.object({
-    breakfastPrince: z.number().nonnegative('Negative value is not accepted'),
+    breakfastPrice: z.number().nonnegative('Negative value is not accepted'),
     created_at: z.string().datetime({ offset: true, local: true }),
     editedAt: z.string().datetime({ offset: true, local: true }),
     id: z.number(),

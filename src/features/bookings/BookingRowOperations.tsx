@@ -18,7 +18,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useCheckOut } from '@/utils/hooks';
+import { useCheckOut, useDeleteBookingMutation } from '@/utils/hooks';
 import { Link } from '@tanstack/react-router';
 import { ArrowDown, ArrowUp, EllipsisVertical, Eye, Loader, Trash2 } from 'lucide-react';
 import { useState } from 'react';
@@ -28,12 +28,15 @@ const BookingRowOperations = ({ bookingRow }: { readonly bookingRow: BookingRowT
     const [openCreateCabin, setOpenCreateCabin] = useState(false);
 
     const checkoutMutation = useCheckOut();
+    const deleteBookingMutation = useDeleteBookingMutation();
+
+    const isLoading = checkoutMutation.isPending || deleteBookingMutation.isPending;
 
     return (
         <Dialog open={openCreateCabin} onOpenChange={setOpenCreateCabin}>
             <DropdownMenu>
                 <DropdownMenuTrigger>
-                    {checkoutMutation.isPending ? (
+                    {isLoading ? (
                         <Loader className='size-4 animate-spin stroke-indigo-500 hover:cursor-pointer' />
                     ) : (
                         <EllipsisVertical className='size-4 stroke-gray-600 hover:cursor-pointer' />
@@ -72,7 +75,15 @@ const BookingRowOperations = ({ bookingRow }: { readonly bookingRow: BookingRowT
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction variant='destructive' onClick={() => {}}>
+                                    <AlertDialogAction
+                                        variant='destructive'
+                                        onClick={() => {
+                                            deleteBookingMutation.mutate({
+                                                id: bookingRow.id.toString(),
+                                                cabinId: bookingRow.cabins.id.toString(),
+                                            });
+                                        }}
+                                    >
                                         Delete
                                     </AlertDialogAction>
                                 </AlertDialogFooter>

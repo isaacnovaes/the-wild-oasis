@@ -1,4 +1,4 @@
-import { getBooking, updateBooking } from '@/services/apiBookings';
+import { deleteBooking, getBooking, updateBooking } from '@/services/apiBookings';
 import type { Booking } from '@/types/global';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getRouteApi } from '@tanstack/react-router';
@@ -19,6 +19,23 @@ export const useBooking = (bookingId: string) =>
         },
     });
 
+export const useDeleteBookingMutation = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationKey: ['bookings', 'delete'],
+        mutationFn: deleteBooking,
+        onSuccess: ({ updateCabin }, { id, cabinId: editedCabinId }) => {
+            toast.success(`Booking ${id} successful deleted`);
+            void queryClient.invalidateQueries({ queryKey: ['bookings'] });
+            if (updateCabin) {
+                toast(`Cabin ${editedCabinId} unlinked from bookings`);
+                void queryClient.invalidateQueries({ queryKey: ['cabins'] });
+            }
+        },
+        onError: (error) => toast.error(error.message),
+    });
+};
+
 export const useCabins = () => {
     const searchParams = getRouteApi('/_app/cabins').useSearch();
 
@@ -34,14 +51,17 @@ export const useCheckIn = () => {
             breakfastInfo,
         }: {
             bookingId: string;
-            breakfastInfo?: Pick<Booking, 'hasBreakfast' | 'extrasPrice' | 'totalPrice'>;
+            breakfastInfo?: Partial<Pick<Booking, 'hasBreakfast' | 'extrasPrice' | 'totalPrice'>>;
         }) => {
             return updateBooking(bookingId, { status: 'checked-in', ...breakfastInfo });
         },
-        onSuccess: (booking) => {
+        onSuccess: (booking, { bookingId }) => {
             toast.success(`Booking ${booking.id.toString()} successfully checked in`);
             void queryClient.invalidateQueries({
                 queryKey: ['bookings'],
+            });
+            void queryClient.invalidateQueries({
+                queryKey: ['booking', bookingId],
             });
         },
         onError: (error) => {
@@ -57,10 +77,13 @@ export const useCheckOut = () => {
         mutationFn: async (bookingId: string) => {
             return updateBooking(bookingId, { status: 'checked-out' });
         },
-        onSuccess: (booking) => {
+        onSuccess: (booking, bookingId) => {
             toast.success(`Booking ${booking.id.toString()} successfully checked out`);
             void queryClient.invalidateQueries({
                 queryKey: ['bookings'],
+            });
+            void queryClient.invalidateQueries({
+                queryKey: ['booking', bookingId],
             });
         },
         onError: (error) => {

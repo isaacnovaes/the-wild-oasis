@@ -2,7 +2,10 @@ import { cn } from '@/lib/utils';
 import type { Booking } from '../types/bookings';
 import { getBookingStatusStyle } from '../utils/helpers';
 
-const Tag = (props: { readonly status: Booking['status']; readonly className?: string }) => {
+const BookingStatus = (props: {
+    readonly status: Booking['status'];
+    readonly className?: string;
+}) => {
     const tagStyle = getBookingStatusStyle(props.status);
     return (
         <span
@@ -15,4 +18,4 @@ const Tag = (props: { readonly status: Booking['status']; readonly className?: s
         </span>
     );
 };
-export default Tag;
+export default BookingStatus;

@@ -1,7 +1,7 @@
 import Back from '@/components/Back';
+import BookingStatus from '@/components/BookingStatus';
 import Loading from '@/components/Loading';
 import PageHeader from '@/components/PageHeader';
-import Tag from '@/components/Tag';
 import { Button } from '@/components/ui/button';
 import { useBooking, useCheckOut, useDeleteBookingMutation } from '@/utils/hooks';
 import { ErrorComponent, getRouteApi, Link, useRouter } from '@tanstack/react-router';
@@ -39,7 +39,7 @@ const Booking = () => {
                 title={
                     <>
                         {`Booking #${bookingId}`}
-                        <Tag className='ml-2' status={status} />
+                        <BookingStatus className='ml-2' status={status} />
                     </>
                 }
             >

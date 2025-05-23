@@ -1,7 +1,7 @@
 import { format, isToday } from 'date-fns';
+import BookingStatus from '../../components/BookingStatus';
 import Currency from '../../components/Currency';
 import Table from '../../components/Table';
-import Tag from '../../components/Tag';
 import type { BookingRow as BookingRowT } from '../../types/bookings';
 import { formatDistanceFromNow } from '../../utils/helpers';
 import BookingRowOperations from './BookingRowOperations';
@@ -30,7 +30,7 @@ const BookingRow = ({ bookingRow }: { readonly bookingRow: BookingRowT }) => {
                 </span>
             </div>
 
-            <Tag status={bookingRow.status} />
+            <BookingStatus status={bookingRow.status} />
             <Currency amount={bookingRow.totalPrice} />
             <BookingRowOperations bookingRow={bookingRow} />
         </Table.Row>

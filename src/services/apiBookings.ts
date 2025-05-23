@@ -1,6 +1,12 @@
+import type { SearchParams } from '@/types/global';
 import { z } from 'zod';
 import supabase from '../supabase';
-import { BookingRowSchema, BookingSchema, type Booking, type SearchParams } from '../types/global';
+import {
+    BookingRowSchema,
+    BookingSchema,
+    type Booking,
+    type CreateBooking,
+} from '../types/bookings';
 import { PAGE_SIZE } from '../utils/constants';
 import { getToday } from '../utils/helpers';
 
@@ -23,7 +29,7 @@ export async function getBookings({ filter, sortBy, page }: SearchParams) {
             ascending: sortBy.direction === 'asc',
         });
 
-    const queryPage = page ?? 1;
+    const queryPage = page;
 
     const from = (queryPage - 1) * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
@@ -53,18 +59,41 @@ export async function getBookings({ filter, sortBy, page }: SearchParams) {
 }
 
 export async function getBooking(id: string): Promise<Booking> {
-    const { data, error } = await supabase
+    const response = await supabase
         .from('bookings')
         .select('*, cabins(*), guests(*)')
         .eq('id', id)
         .single();
 
-    if (error) {
-        console.error(error);
-        throw new Error(error.message);
+    if (response.error) {
+        console.error(response.error);
+        throw new Error(response.error.message);
     }
 
-    const validation = BookingSchema.safeParse(data);
+    const validation = BookingSchema.safeParse(response.data);
+
+    if (validation.error) {
+        console.error(validation.error);
+        throw new Error(validation.error.message);
+    }
+
+    return validation.data;
+}
+
+export async function createBooking(newBooking: CreateBooking) {
+    const response = await supabase
+        .from('bookings')
+        .insert(newBooking)
+        .select(
+            'id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice,cabinId, guestId, cabins(id), guests(fullName, email)'
+        )
+        .single();
+
+    if (response.error) {
+        throw new Error(response.error.message);
+    }
+
+    const validation = BookingRowSchema.safeParse(response.data);
 
     if (validation.error) {
         console.error(validation.error);
@@ -75,21 +104,15 @@ export async function getBooking(id: string): Promise<Booking> {
 }
 
 export async function updateBooking(id: string, obj: Partial<Booking>) {
-    const { data, error } = await supabase
-        .from('bookings')
-        .update(obj)
-        .eq('id', id)
-        .select()
-        .single();
+    const response = await supabase.from('bookings').update(obj).eq('id', id).select().single();
 
-    if (error) {
-        console.error(error);
-        throw new Error(error.message);
+    if (response.error) {
+        throw new Error(response.error.message);
     }
 
     const validation = BookingSchema.omit({ cabins: true, guests: true })
         .extend({ cabinId: z.number().nonnegative(), guestId: z.number().nonnegative() })
-        .safeParse(data);
+        .safeParse(response.data);
 
     if (validation.error) {
         console.error(validation.error);

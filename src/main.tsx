@@ -39,7 +39,8 @@ type QueryKeys =
     | 'checkin'
     | 'checkout'
     | 'settings'
-    | 'users';
+    | 'users'
+    | 'guests';
 
 type QueryKey = [QueryKeys, ...ReadonlyArray<unknown>];
 

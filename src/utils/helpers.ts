@@ -1,5 +1,6 @@
-import { differenceInDays, formatDistance, parseISO } from 'date-fns';
-import type { Booking } from '../types/global';
+import type { getAllCabins } from '@/services/apiCabins';
+import { differenceInDays, formatDistance, formatISO, parseISO } from 'date-fns';
+import type { Booking, BookingForm, CreateBooking } from '../types/bookings';
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)
 export const subtractDates = (dateStr1: string, dateStr2: string) =>
@@ -38,3 +39,33 @@ const statusToStyleMap: Record<Booking['status'], { color: string; background: s
 };
 
 export const getBookingStatusStyle = (status: Booking['status']) => statusToStyleMap[status];
+
+export const getCreateBooking = ({
+    cabin,
+    formData,
+    breakfastPrice,
+}: {
+    formData: BookingForm;
+    cabin: Awaited<ReturnType<typeof getAllCabins>>['cabins'][0];
+    breakfastPrice: number;
+}): CreateBooking => {
+    return {
+        startDate: formatISO(formData.bookingDates.from),
+        endDate: formatISO(formData.bookingDates.to),
+        numNights: formData.numNights,
+        numGuests: formData.numGuests,
+        cabinPrice: cabin.regularPrice,
+        extrasPrice: formData.hasBreakfast
+            ? breakfastPrice * formData.numGuests * formData.numNights
+            : 0,
+        status: 'unconfirmed',
+        hasBreakfast: formData.hasBreakfast,
+        isPaid: formData.isPaid,
+        observations: formData.observations,
+        totalPrice:
+            cabin.regularPrice * formData.numNights +
+            (formData.hasBreakfast ? breakfastPrice * formData.numGuests * formData.numNights : 0),
+        cabinId: formData.cabinId,
+        guestId: formData.guestId,
+    };
+};

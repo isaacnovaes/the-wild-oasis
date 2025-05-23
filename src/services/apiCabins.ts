@@ -1,3 +1,6 @@
+/* eslint-disable camelcase */
+import { BookingSchema } from '@/types/bookings';
+import type { SearchParams } from '@/types/global';
 import { z } from 'zod';
 import supabase, { SUPABASE_URL } from '../supabase';
 import {
@@ -6,8 +9,7 @@ import {
     CabinSchema,
     type Cabin,
     type CabinForm,
-    type SearchParams,
-} from '../types/global';
+} from '../types/cabins';
 import { PAGE_SIZE } from '../utils/constants';
 
 export async function getCabins({ page, filter, sortBy }: SearchParams) {
@@ -50,6 +52,56 @@ export async function getCabins({ page, filter, sortBy }: SearchParams) {
     return validation.data;
 }
 
+export async function getAllCabins() {
+    const query = supabase
+        .from('cabins')
+        .select('id,name, maxCapacity, regularPrice, discount, image');
+
+    const { data, error } = await query;
+
+    if (error) {
+        console.error(error);
+        throw new Error(error.message);
+    }
+
+    const responseSchema = z.object({
+        cabins: z.array(CabinSchema.omit({ created_at: true, linkedToBooking: true })),
+    });
+
+    const validation = responseSchema.safeParse({ cabins: data });
+
+    if (validation.error) {
+        console.error(validation.error);
+        throw new Error(validation.error.message);
+    }
+
+    return validation.data;
+}
+
+export async function getBookedOffCabinDates(cabinId: string) {
+    const query = await supabase
+        .from('bookings')
+        .select('startDate, endDate')
+        .eq('cabinId', cabinId);
+
+    if (query.error) {
+        throw new Error(query.error.message);
+    }
+
+    const schema = BookingSchema.pick({
+        startDate: true,
+        endDate: true,
+    });
+
+    const validation = z.array(schema).safeParse(query.data);
+
+    if (validation.error) {
+        throw new Error(validation.error.message);
+    }
+
+    return validation.data;
+}
+
 export async function createEditCabin({
     newCabin,
     id,
@@ -80,14 +132,13 @@ export async function createEditCabin({
     // B) EDIT
     if (id) query = query.update({ ...newCabin, image: imagePath }).eq('id', id);
 
-    const { data, error } = await query.select().single();
+    const response = await query.select().single();
 
-    if (error) {
-        console.error(error);
-        throw new Error(error.message);
+    if (response.error) {
+        throw new Error(response.error.message);
     }
 
-    const cabinValidation = CabinSchema.safeParse(data);
+    const cabinValidation = CabinSchema.safeParse(response.data);
 
     if (cabinValidation.error) {
         console.error(cabinValidation.error);

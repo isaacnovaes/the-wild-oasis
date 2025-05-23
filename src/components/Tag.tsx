@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import type { Booking } from '../types/global';
+import type { Booking } from '../types/bookings';
 import { getBookingStatusStyle } from '../utils/helpers';
 
 const Tag = (props: { readonly status: Booking['status']; readonly className?: string }) => {

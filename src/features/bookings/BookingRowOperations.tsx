@@ -22,7 +22,7 @@ import { useCheckOut, useDeleteBookingMutation } from '@/utils/hooks';
 import { Link } from '@tanstack/react-router';
 import { ArrowDown, ArrowUp, EllipsisVertical, Eye, Loader, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import type { BookingRow as BookingRowT } from '../../types/global';
+import type { BookingRow as BookingRowT } from '../../types/bookings';
 
 const BookingRowOperations = ({ bookingRow }: { readonly bookingRow: BookingRowT }) => {
     const [openCreateCabin, setOpenCreateCabin] = useState(false);

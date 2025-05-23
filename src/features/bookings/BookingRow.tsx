@@ -2,7 +2,7 @@ import { format, isToday } from 'date-fns';
 import Currency from '../../components/Currency';
 import Table from '../../components/Table';
 import Tag from '../../components/Tag';
-import type { BookingRow as BookingRowT } from '../../types/global';
+import type { BookingRow as BookingRowT } from '../../types/bookings';
 import { formatDistanceFromNow } from '../../utils/helpers';
 import BookingRowOperations from './BookingRowOperations';
 

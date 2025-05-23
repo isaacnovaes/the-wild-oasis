@@ -1,5 +1,6 @@
+/* eslint-disable camelcase */
 import { add } from 'date-fns';
-import type { Booking } from '../types/global';
+import type { Booking } from '../types/bookings';
 
 function fromToday(numDays: number, withTime = false) {
     const date = add(new Date(), { days: numDays });

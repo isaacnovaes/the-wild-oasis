@@ -2,7 +2,8 @@ import { isFuture, isPast, isToday } from 'date-fns';
 import { useState } from 'react';
 import supabase from '../supabase.ts';
 
-import type { Booking } from '../types/global.ts';
+import { getSettings } from '@/services/apiSettings.ts';
+import type { Booking } from '../types/bookings';
 import { subtractDates } from '../utils/helpers.ts';
 import { bookings } from './data-bookings';
 import { cabins } from './data-cabins';
@@ -38,6 +39,7 @@ async function createBookings() {
     const { data: guestsIds } = await supabase.from('guests').select('id').order('id');
     const allGuestIds = guestsIds?.map((guest) => guest.id);
     const { data: cabinsIds } = await supabase.from('cabins').select('id').order('id');
+    const settings = await getSettings();
 
     const allCabinIds = cabinsIds?.map((cabin) => cabin.id);
 
@@ -46,8 +48,10 @@ async function createBookings() {
         const cabin = cabins.at(booking.cabinId - 1);
         const numNights = subtractDates(booking.endDate, booking.startDate);
         const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);
-        const extrasPrice = booking.hasBreakfast ? numNights * 15 * booking.numGuests : 0; // hardcoded breakfast price
-        const totalPrice = cabinPrice + extrasPrice;
+        const extrasPrice = booking.hasBreakfast
+            ? numNights * settings.breakfastPrice * booking.numGuests
+            : 0;
+        const totalPrice = cabinPrice * numNights + extrasPrice;
 
         let status;
         if (isPast(new Date(booking.endDate)) && !isToday(new Date(booking.endDate)))

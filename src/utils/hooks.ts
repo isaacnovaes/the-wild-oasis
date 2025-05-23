@@ -1,5 +1,5 @@
 import { deleteBooking, getBooking, updateBooking } from '@/services/apiBookings';
-import type { Booking } from '@/types/global';
+import type { Booking } from '@/types/bookings';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getRouteApi } from '@tanstack/react-router';
 import toast from 'react-hot-toast';

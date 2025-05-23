@@ -1,6 +1,6 @@
 import DataItem from '@/components/DataItem';
 import { cn } from '@/lib/utils';
-import type { Booking } from '@/types/global';
+import type { Booking } from '@/types/bookings';
 import { formatCurrency, formatDistanceFromNow } from '@/utils/helpers';
 import { format, isToday } from 'date-fns';
 import { CircleCheckBig, CircleDollarSign, MessageSquareText, Warehouse } from 'lucide-react';
@@ -19,6 +19,7 @@ const BookingDetail = (props: { readonly booking: Booking }) => {
         extrasPrice,
         isPaid,
         totalPrice,
+        // eslint-disable-next-line camelcase
         created_at,
     } = props.booking;
 

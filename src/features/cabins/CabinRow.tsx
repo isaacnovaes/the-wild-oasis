@@ -1,6 +1,6 @@
 import Currency from '../../components/Currency';
 import Table from '../../components/Table';
-import type { Cabin } from '../../types/global';
+import type { Cabin } from '../../types/cabins';
 import CabinRowOperations from './CabinRowOperations';
 
 const CabinRow = ({ cabin }: { readonly cabin: Cabin }) => {

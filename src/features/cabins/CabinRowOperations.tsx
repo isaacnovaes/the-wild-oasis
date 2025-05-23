@@ -12,6 +12,7 @@ import {
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -29,7 +30,7 @@ import { Copy, EllipsisVertical, Loader, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { createEditCabin, deleteCabin } from '../../services/apiCabins';
-import type { Cabin } from '../../types/global';
+import type { Cabin } from '../../types/cabins';
 import CabinForm from './CabinForm';
 
 const CabinRowOperations = ({ cabin }: { readonly cabin: Cabin }) => {
@@ -138,9 +139,12 @@ const CabinRowOperations = ({ cabin }: { readonly cabin: Cabin }) => {
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <DialogContent aria-describedby={undefined}>
+            <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Edit cabin</DialogTitle>
+                    <DialogDescription>
+                        Edit cabin form. Click save when you&apos;re done.
+                    </DialogDescription>
                 </DialogHeader>
                 <CabinForm
                     cabin={cabin}

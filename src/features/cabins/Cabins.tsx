@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -40,9 +41,12 @@ const Cabins = () => {
                         <DialogTrigger asChild>
                             <Button variant={'outline'}>Create new cabin</Button>
                         </DialogTrigger>
-                        <DialogContent aria-describedby={undefined}>
+                        <DialogContent>
                             <DialogHeader>
                                 <DialogTitle>New cabin</DialogTitle>
+                                <DialogDescription>
+                                    Create cabin form. Click save when you&apos;re done.
+                                </DialogDescription>
                             </DialogHeader>
                             <CabinForm
                                 mode='create'

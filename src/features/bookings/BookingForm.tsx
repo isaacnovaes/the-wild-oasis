@@ -146,6 +146,8 @@ const BookingForm = (props: Props) => {
             })) ?? [];
 
     const disabledDates = [...bookedOffCabinDates, { before: new Date() }];
+    const disabledDatesFrom = [...disabledDates, { after: form.getValues('bookingDates.to') }];
+    const disabledDatesTo = [...disabledDates, { before: form.getValues('bookingDates.from') }];
 
     if (guestsQuery.isPending || cabinsQuery.isPending || settingsQuery.isPending) {
         return <Loading />;
@@ -172,6 +174,8 @@ const BookingForm = (props: Props) => {
     const onSubmit = (formData: BookingFormT) => {
         const { bookingDates } = formData;
 
+        let isError = false;
+
         for (let index = 0; index < bookedOffCabinDates.length; index++) {
             const bookedOffDates = bookedOffCabinDates[index];
             if (!bookedOffDates) {
@@ -184,15 +188,46 @@ const BookingForm = (props: Props) => {
             );
             if (overlappingIntervals) {
                 form.setError(
-                    'bookingDates',
+                    'bookingDates.from',
                     {
                         message: `Cabin is already booked within ${format(bookedOffDates.from, 'PPP')} - ${format(bookedOffDates.to, 'PPP')}`,
                         type: 'validate',
                     },
                     { shouldFocus: true }
                 );
-                return;
+                isError = true;
+                break;
             }
+        }
+
+        const { maxBookingLength, minBookingLength, maxGestsPerBooking } = settingsQuery.data;
+
+        if (formData.numGuests > maxGestsPerBooking) {
+            form.setError('numGuests', {
+                message: `Max number of guests setting is ${maxGestsPerBooking.toString()}`,
+                type: 'validate',
+            });
+            isError = true;
+        }
+
+        if (formData.numNights > maxBookingLength) {
+            form.setError('numNights', {
+                message: `Max number of nights setting is ${maxBookingLength.toString()}`,
+                type: 'validate',
+            });
+            isError = true;
+        }
+
+        if (formData.numNights < minBookingLength) {
+            form.setError('numNights', {
+                message: `Min number of nights setting is ${minBookingLength.toString()}`,
+                type: 'validate',
+            });
+            isError = true;
+        }
+
+        if (isError) {
+            return;
         }
 
         const cabin = cabinsQuery.data.cabins.find((c) => c.id === formData.cabinId);
@@ -248,10 +283,10 @@ const BookingForm = (props: Props) => {
 
                 <FormField
                     control={form.control}
-                    name='bookingDates'
+                    name='bookingDates.from'
                     render={({ field }) => (
                         <FormItem className='flex flex-col'>
-                            <FormLabel>Start date and end date</FormLabel>
+                            <FormLabel>Start date</FormLabel>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <FormControl>
@@ -259,11 +294,7 @@ const BookingForm = (props: Props) => {
                                             className={cn('w-full pl-3 text-left font-normal')}
                                             variant={'outline'}
                                         >
-                                            <span>
-                                                {format(field.value.from, 'PPP')}
-                                                {' - '}
-                                                {format(field.value.to, 'PPP')}
-                                            </span>
+                                            <span>{format(field.value, 'PPP')}</span>
 
                                             <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
                                         </Button>
@@ -271,8 +302,43 @@ const BookingForm = (props: Props) => {
                                 </PopoverTrigger>
                                 <PopoverContent align='start' className='w-auto p-0'>
                                     <Calendar
-                                        disabled={disabledDates}
-                                        mode='range'
+                                        disabled={disabledDatesFrom}
+                                        mode='single'
+                                        numberOfMonths={2}
+                                        selected={field.value}
+                                        onSelect={field.onChange}
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name='bookingDates.to'
+                    render={({ field }) => (
+                        <FormItem className='flex flex-col'>
+                            <FormLabel>End date </FormLabel>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <FormControl>
+                                        <Button
+                                            className={cn('w-full pl-3 text-left font-normal')}
+                                            variant={'outline'}
+                                        >
+                                            <span>{format(field.value, 'PPP')}</span>
+
+                                            <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                                        </Button>
+                                    </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent align='start' className='w-auto p-0'>
+                                    <Calendar
+                                        disabled={disabledDatesTo}
+                                        mode='single'
+                                        numberOfMonths={2}
                                         selected={field.value}
                                         onSelect={field.onChange}
                                     />

@@ -81,7 +81,7 @@ export async function getAllCabins() {
 export async function getBookedOffCabinDates(cabinId: string) {
     const query = await supabase
         .from('bookings')
-        .select('startDate, endDate')
+        .select('id,startDate, endDate')
         .eq('cabinId', cabinId);
 
     if (query.error) {
@@ -89,6 +89,7 @@ export async function getBookedOffCabinDates(cabinId: string) {
     }
 
     const schema = BookingSchema.pick({
+        id: true,
         startDate: true,
         endDate: true,
     });

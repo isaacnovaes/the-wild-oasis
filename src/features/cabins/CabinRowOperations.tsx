@@ -141,7 +141,7 @@ const CabinRowOperations = ({ cabin }: { readonly cabin: Cabin }) => {
 
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Edit cabin</DialogTitle>
+                    <DialogTitle>Edit cabin #{cabin.id}</DialogTitle>
                     <DialogDescription>
                         Edit cabin form. Click save when you&apos;re done.
                     </DialogDescription>

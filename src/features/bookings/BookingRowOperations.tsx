@@ -9,7 +9,13 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -20,12 +26,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useCheckOut, useDeleteBookingMutation } from '@/utils/hooks';
 import { Link } from '@tanstack/react-router';
-import { ArrowDown, ArrowUp, EllipsisVertical, Eye, Loader, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, EllipsisVertical, Eye, Loader, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import type { BookingRow as BookingRowT } from '../../types/bookings';
+import BookingForm from './BookingForm';
 
 const BookingRowOperations = ({ bookingRow }: { readonly bookingRow: BookingRowT }) => {
-    const [openCreateCabin, setOpenCreateCabin] = useState(false);
+    const [openEditBooking, setOpenEditBooking] = useState(false);
 
     const checkoutMutation = useCheckOut();
     const deleteBookingMutation = useDeleteBookingMutation();
@@ -33,7 +40,7 @@ const BookingRowOperations = ({ bookingRow }: { readonly bookingRow: BookingRowT
     const isLoading = checkoutMutation.isPending || deleteBookingMutation.isPending;
 
     return (
-        <Dialog open={openCreateCabin} onOpenChange={setOpenCreateCabin}>
+        <Dialog open={openEditBooking} onOpenChange={setOpenEditBooking}>
             <DropdownMenu>
                 <DropdownMenuTrigger>
                     {isLoading ? (
@@ -80,7 +87,7 @@ const BookingRowOperations = ({ bookingRow }: { readonly bookingRow: BookingRowT
                                         onClick={() => {
                                             deleteBookingMutation.mutate({
                                                 id: bookingRow.id.toString(),
-                                                cabinId: bookingRow.cabins.id.toString(),
+                                                cabinId: bookingRow.cabinId.toString(),
                                             });
                                         }}
                                     >
@@ -91,15 +98,30 @@ const BookingRowOperations = ({ bookingRow }: { readonly bookingRow: BookingRowT
                         </AlertDialog>
                     </DropdownMenuItem>
                     {bookingRow.status === 'unconfirmed' ? (
-                        <DropdownMenuItem>
-                            <Link
-                                className='flex items-center justify-between gap-x-2'
-                                params={{ bookingId: bookingRow.id.toString() }}
-                                to='/check-in/$bookingId'
-                            >
-                                <ArrowDown className='size-4 stroke-slate-700' /> Check in
-                            </Link>
-                        </DropdownMenuItem>
+                        <>
+                            {!bookingRow.isPaid && (
+                                <DropdownMenuItem asChild>
+                                    <DialogTrigger
+                                        className='w-full'
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                        }}
+                                    >
+                                        <Pencil className='size-4 stroke-slate-700' /> Edit
+                                    </DialogTrigger>
+                                </DropdownMenuItem>
+                            )}
+
+                            <DropdownMenuItem>
+                                <Link
+                                    className='flex items-center justify-between gap-x-2'
+                                    params={{ bookingId: bookingRow.id.toString() }}
+                                    to='/check-in/$bookingId'
+                                >
+                                    <ArrowDown className='size-4 stroke-slate-700' /> Check in
+                                </Link>
+                            </DropdownMenuItem>
+                        </>
                     ) : null}
                     {bookingRow.status === 'checked-in' ? (
                         <DropdownMenuItem
@@ -115,9 +137,15 @@ const BookingRowOperations = ({ bookingRow }: { readonly bookingRow: BookingRowT
 
             <DialogContent aria-describedby={undefined}>
                 <DialogHeader>
-                    <DialogTitle>Edit cabin</DialogTitle>
+                    <DialogTitle>Edit booking #{bookingRow.id}</DialogTitle>
                 </DialogHeader>
-                <div>FORM</div>
+                <BookingForm
+                    booking={bookingRow}
+                    mode='edit'
+                    onSuccess={() => {
+                        setOpenEditBooking(false);
+                    }}
+                />
             </DialogContent>
         </Dialog>
     );

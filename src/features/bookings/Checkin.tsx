@@ -4,7 +4,7 @@ import PageHeader from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { formatCurrency } from '@/utils/helpers';
-import { useBooking, useCheckIn, useSettings } from '@/utils/hooks';
+import { useCheckIn, useFullBooking, useSettings } from '@/utils/hooks';
 import { ErrorComponent, getRouteApi, useRouter } from '@tanstack/react-router';
 import { ArrowDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -17,7 +17,7 @@ const Checkin = () => {
     const [confirmPaid, setConfirmPaid] = useState(false);
     const { bookingId } = routeApi.useParams();
     const navigate = routeApi.useNavigate();
-    const bookingQuery = useBooking(bookingId);
+    const bookingQuery = useFullBooking(bookingId);
     const checkInMutation = useCheckIn();
     const settingsQuery = useSettings();
     const router = useRouter();

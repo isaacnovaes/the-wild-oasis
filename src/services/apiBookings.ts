@@ -4,8 +4,10 @@ import supabase from '../supabase';
 import {
     BookingRowSchema,
     BookingSchema,
+    FullBookingSchema,
     type Booking,
     type CreateBooking,
+    type FullBooking,
 } from '../types/bookings';
 import { PAGE_SIZE } from '../utils/constants';
 import { getToday } from '../utils/helpers';
@@ -14,7 +16,7 @@ export async function getBookings({ filter, sortBy, page }: SearchParams) {
     let query = supabase
         .from('bookings')
         .select(
-            'id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice,cabinId, guestId, cabins(id), guests(fullName, email)',
+            'id, startDate, endDate, numNights, numGuests, status, totalPrice,hasBreakfast, isPaid, observations,cabinId, guestId, cabins(id), guests(fullName, email)',
             { count: 'exact' }
         );
     // FILTER
@@ -58,7 +60,7 @@ export async function getBookings({ filter, sortBy, page }: SearchParams) {
     return validation.data;
 }
 
-export async function getBooking(id: string): Promise<Booking> {
+export async function getFullBooking(id: string): Promise<FullBooking> {
     const response = await supabase
         .from('bookings')
         .select('*, cabins(*), guests(*)')
@@ -70,7 +72,7 @@ export async function getBooking(id: string): Promise<Booking> {
         throw new Error(response.error.message);
     }
 
-    const validation = BookingSchema.safeParse(response.data);
+    const validation = FullBookingSchema.safeParse(response.data);
 
     if (validation.error) {
         console.error(validation.error);
@@ -81,19 +83,13 @@ export async function getBooking(id: string): Promise<Booking> {
 }
 
 export async function createBooking(newBooking: CreateBooking) {
-    const response = await supabase
-        .from('bookings')
-        .insert(newBooking)
-        .select(
-            'id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice,cabinId, guestId, cabins(id), guests(fullName, email)'
-        )
-        .single();
+    const response = await supabase.from('bookings').insert(newBooking).select('*').single();
 
     if (response.error) {
         throw new Error(response.error.message);
     }
 
-    const validation = BookingRowSchema.safeParse(response.data);
+    const validation = BookingSchema.safeParse(response.data);
 
     if (validation.error) {
         console.error(validation.error);
@@ -110,9 +106,7 @@ export async function updateBooking(id: string, obj: Partial<Booking>) {
         throw new Error(response.error.message);
     }
 
-    const validation = BookingSchema.omit({ cabins: true, guests: true })
-        .extend({ cabinId: z.number().nonnegative(), guestId: z.number().nonnegative() })
-        .safeParse(response.data);
+    const validation = BookingSchema.safeParse(response.data);
 
     if (validation.error) {
         console.error(validation.error);

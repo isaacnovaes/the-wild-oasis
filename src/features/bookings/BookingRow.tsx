@@ -10,7 +10,7 @@ const BookingRow = ({ bookingRow }: { readonly bookingRow: BookingRowT }) => {
     return (
         <Table.Row>
             <span className='text-sm font-semibold text-blue-950'>{bookingRow.id}</span>
-            <span className='text-sm font-semibold text-blue-950'>{bookingRow.cabins.id}</span>
+            <span className='text-sm font-semibold text-blue-950'>{bookingRow.cabinId}</span>
 
             <div className='flex flex-col items-start'>
                 <span className='text-base text-gray-800'>{bookingRow.guests.fullName}</span>

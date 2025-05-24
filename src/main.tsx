@@ -32,7 +32,6 @@ const router = createRouter({
 
 type QueryKeys =
     | 'account'
-    | 'booking'
     | 'bookings'
     | 'dashboard'
     | 'cabins'

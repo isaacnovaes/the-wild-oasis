@@ -1,4 +1,4 @@
-import { deleteBooking, getBooking, updateBooking } from '@/services/apiBookings';
+import { deleteBooking, getFullBooking, updateBooking } from '@/services/apiBookings';
 import type { Booking } from '@/types/bookings';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getRouteApi } from '@tanstack/react-router';
@@ -11,11 +11,11 @@ export const useBookings = () => {
     return useQuery(bookingsQueryOptions(searchParams));
 };
 
-export const useBooking = (bookingId: string) =>
+export const useFullBooking = (bookingId: string) =>
     useQuery({
-        queryKey: ['booking', bookingId],
+        queryKey: ['bookings', 'booking', bookingId],
         queryFn: async () => {
-            return getBooking(bookingId);
+            return getFullBooking(bookingId);
         },
     });
 
@@ -61,7 +61,7 @@ export const useCheckIn = () => {
                 queryKey: ['bookings'],
             });
             void queryClient.invalidateQueries({
-                queryKey: ['booking', bookingId],
+                queryKey: ['bookings', 'booking', bookingId],
             });
         },
         onError: (error) => {
@@ -83,7 +83,7 @@ export const useCheckOut = () => {
                 queryKey: ['bookings'],
             });
             void queryClient.invalidateQueries({
-                queryKey: ['booking', bookingId],
+                queryKey: ['bookings', 'booking', bookingId],
             });
         },
         onError: (error) => {

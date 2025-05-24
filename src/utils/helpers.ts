@@ -69,3 +69,31 @@ export const getCreateBooking = ({
         guestId: formData.guestId,
     };
 };
+export const getEditBooking = ({
+    cabin,
+    formData,
+    breakfastPrice,
+}: {
+    formData: BookingForm;
+    cabin: Awaited<ReturnType<typeof getAllCabins>>['cabins'][0];
+    breakfastPrice: number;
+}) => {
+    return {
+        startDate: formatISO(formData.bookingDates.from),
+        endDate: formatISO(formData.bookingDates.to),
+        numNights: formData.numNights,
+        numGuests: formData.numGuests,
+        cabinPrice: cabin.regularPrice,
+        extrasPrice: formData.hasBreakfast
+            ? breakfastPrice * formData.numGuests * formData.numNights
+            : 0,
+        hasBreakfast: formData.hasBreakfast,
+        isPaid: formData.isPaid,
+        observations: formData.observations,
+        totalPrice:
+            cabin.regularPrice * formData.numNights +
+            (formData.hasBreakfast ? breakfastPrice * formData.numGuests * formData.numNights : 0),
+        cabinId: formData.cabinId,
+        guestId: formData.guestId,
+    };
+};

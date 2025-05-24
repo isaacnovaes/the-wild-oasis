@@ -14,22 +14,23 @@ import {
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popoverDialog';
 import { cn } from '@/lib/utils';
-import { createBooking } from '@/services/apiBookings';
+import { createBooking, updateBooking } from '@/services/apiBookings';
 import { getAllCabins, getBookedOffCabinDates } from '@/services/apiCabins';
 import { getGuests } from '@/services/apiGuests';
 import {
     BookingFormSchema,
+    type Booking,
     type BookingForm as BookingFormT,
     type BookingRow,
 } from '@/types/bookings';
-import { getCreateBooking } from '@/utils/helpers';
+import { getCreateBooking, getEditBooking } from '@/utils/helpers';
 import { useSettings } from '@/utils/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ErrorComponent } from '@tanstack/react-router';
 import { add, areIntervalsOverlapping, format, interval } from 'date-fns';
 import { CalendarIcon, Loader } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import CabinCombo from './CabinCombo';
@@ -45,16 +46,31 @@ type Props =
 const BookingForm = (props: Props) => {
     const form = useForm({
         resolver: zodResolver(BookingFormSchema),
-        defaultValues: {
-            guestId: 0,
-            cabinId: 0,
-            bookingDates: { from: new Date(), to: add(new Date(), { days: 3 }) },
-            numGuests: 1,
-            numNights: 1,
-            hasBreakfast: false,
-            isPaid: false,
-            observations: '',
-        },
+        defaultValues:
+            props.mode === 'create'
+                ? {
+                      guestId: 0,
+                      cabinId: 0,
+                      bookingDates: { from: new Date(), to: add(new Date(), { days: 3 }) },
+                      numGuests: 1,
+                      numNights: 1,
+                      hasBreakfast: false,
+                      isPaid: false,
+                      observations: '',
+                  }
+                : {
+                      guestId: props.booking.guestId,
+                      cabinId: props.booking.cabinId,
+                      bookingDates: {
+                          from: new Date(props.booking.startDate),
+                          to: new Date(props.booking.endDate),
+                      },
+                      numGuests: props.booking.numGuests,
+                      numNights: props.booking.numNights,
+                      hasBreakfast: props.booking.hasBreakfast,
+                      isPaid: props.booking.isPaid,
+                      observations: props.booking.observations,
+                  },
     });
 
     const queryClient = useQueryClient();
@@ -101,15 +117,35 @@ const BookingForm = (props: Props) => {
         },
     });
 
+    const editBookingMutation = useMutation({
+        mutationKey: ['bookings', 'edit'],
+        mutationFn: async ({ id, obj }: { id: string; obj: Partial<Booking> }) => {
+            return updateBooking(id, obj);
+        },
+        onSuccess: (b) => {
+            toast.success(`Booking  ${b.id.toString()} successfully edited`);
+            void queryClient.invalidateQueries({ queryKey: ['bookings'] });
+            props.onSuccess();
+        },
+        onError: (error) => {
+            toast.error(error.message);
+        },
+    });
+
     const bookedOffCabinDates =
-        useMemo(
-            () =>
-                bookedOffCabinDatesQuery.data?.map((r) => ({
-                    from: new Date(r.startDate),
-                    to: new Date(r.endDate),
-                })),
-            [bookedOffCabinDatesQuery.data]
-        ) ?? [];
+        bookedOffCabinDatesQuery.data
+            ?.filter((r) => {
+                if (props.mode === 'edit' && r.id === props.booking.id) {
+                    return false;
+                }
+                return true;
+            })
+            .map((r) => ({
+                from: new Date(r.startDate),
+                to: new Date(r.endDate),
+            })) ?? [];
+
+    const disabledDates = [...bookedOffCabinDates, { before: new Date() }];
 
     if (guestsQuery.isPending || cabinsQuery.isPending || settingsQuery.isPending) {
         return <Loading />;
@@ -168,9 +204,21 @@ const BookingForm = (props: Props) => {
             });
             createBookingMutation.mutate(booking);
         }
+
+        if (props.mode === 'edit' && cabin) {
+            editBookingMutation.mutate({
+                id: props.booking.id.toString(),
+                obj: getEditBooking({
+                    formData,
+                    cabin,
+                    breakfastPrice: settingsQuery.data.breakfastPrice,
+                }),
+            });
+        }
     };
 
-    const disabled = createBookingMutation.isPending || !form.formState.isDirty;
+    const disabled =
+        createBookingMutation.isPending || !form.formState.isDirty || editBookingMutation.isPending;
 
     return (
         <Form {...form}>
@@ -223,7 +271,7 @@ const BookingForm = (props: Props) => {
                                 </PopoverTrigger>
                                 <PopoverContent align='start' className='w-auto p-0'>
                                     <Calendar
-                                        disabled={bookedOffCabinDates}
+                                        disabled={disabledDates}
                                         mode='range'
                                         selected={field.value}
                                         onSelect={field.onChange}

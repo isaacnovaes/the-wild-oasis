@@ -1,11 +1,11 @@
 import DataItem from '@/components/DataItem';
 import { cn } from '@/lib/utils';
-import type { Booking } from '@/types/bookings';
+import type { FullBooking } from '@/types/bookings';
 import { formatCurrency, formatDistanceFromNow } from '@/utils/helpers';
 import { format, isToday } from 'date-fns';
 import { CircleCheckBig, CircleDollarSign, MessageSquareText, Warehouse } from 'lucide-react';
 
-const BookingDetail = (props: { readonly booking: Booking }) => {
+const BookingDetail = (props: { readonly booking: FullBooking }) => {
     const {
         numNights,
         cabins,

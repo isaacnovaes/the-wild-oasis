@@ -164,5 +164,6 @@ export default tseslintPlugin.config(
             ], // avoid react component naming warning
             '@tanstack/router/create-route-property-order': 'warn',
         },
-    }
+    },
+    { ignores: ['src/routeTree', 'src/components/ui'] }
 );

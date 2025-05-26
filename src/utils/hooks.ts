@@ -1,3 +1,4 @@
+import { getCurrentUser } from '@/services/apiAuth';
 import { deleteBooking, getFullBooking, updateBooking } from '@/services/apiBookings';
 import type { Booking } from '@/types/bookings';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -95,3 +96,12 @@ export const useCheckOut = () => {
 export const useSettings = () => {
     return useQuery(settingsQueryOptions);
 };
+
+export function useUser() {
+    const { isLoading, data: user } = useQuery({
+        queryKey: ['user'],
+        queryFn: getCurrentUser,
+    });
+
+    return { isLoading, user, isAuthenticated: user?.role === 'authenticated' };
+}

@@ -23,7 +23,7 @@ export async function signup({
 
     if (error) throw new Error(error.message);
 
-    return data;
+    return data.user;
 }
 
 export async function login({ email, password }: { email: string; password: string }) {
@@ -31,7 +31,6 @@ export async function login({ email, password }: { email: string; password: stri
         email,
         password,
     });
-
     if (error) throw new Error(error.message);
 
     return data;
@@ -40,11 +39,18 @@ export async function login({ email, password }: { email: string; password: stri
 export async function getCurrentUser() {
     const { data: session } = await supabase.auth.getSession();
     if (!session.session) return null;
-
-    const { data, error } = await supabase.auth.getUser();
+    const {
+        data: { user },
+        error,
+    } = await supabase.auth.getUser();
 
     if (error) throw new Error(error.message);
-    return data.user;
+
+    if (!user) {
+        throw new Error('There is no user');
+    }
+
+    return user;
 }
 
 export async function logout() {

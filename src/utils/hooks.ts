@@ -1,4 +1,4 @@
-import { getCurrentUser } from '@/services/apiAuth';
+import { getCurrentUser, updateCurrentUser } from '@/services/apiAuth';
 import { deleteBooking, getFullBooking, updateBooking } from '@/services/apiBookings';
 import type { Booking } from '@/types/bookings';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -105,3 +105,18 @@ export function useUser() {
 
     return { isLoading, user, isAuthenticated: user?.role === 'authenticated' };
 }
+
+export const useUpdateUserMutation = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationKey: ['user'],
+        mutationFn: updateCurrentUser,
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['user'] });
+            toast.success('User updated');
+        },
+        onError: (e) => {
+            toast.error(e.message);
+        },
+    });
+};

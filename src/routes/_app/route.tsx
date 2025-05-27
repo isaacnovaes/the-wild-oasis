@@ -37,7 +37,8 @@ function RouteComponent() {
                             <img
                                 alt='logo'
                                 className='h-10 rounded-full border-2 border-indigo-400'
-                                src='/default-user.jpg'
+                                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                                src={user?.user_metadata.avatar ?? '/default-user.jpg'}
                             />
                             <span className='text-gray-700'>{user?.user_metadata.fullName}</span>
                         </div>

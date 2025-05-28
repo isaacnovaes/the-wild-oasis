@@ -31,6 +31,7 @@ const HeaderLinks = () => {
             </Tooltip>
 
             <Button
+                className='logout'
                 disabled={logoutMutation.isPending}
                 variant={'ghost'}
                 onClick={() => {

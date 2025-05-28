@@ -8,7 +8,10 @@ function fromToday(numDays: number, withTime = false) {
     return date.toISOString().slice(0, -1);
 }
 
-export const bookings: Omit<Booking, 'id'>[] = [
+export const bookings: Omit<
+    Booking,
+    'id' | 'numNights' | 'cabinPrice' | 'totalPrice' | 'extrasPrice' | 'status'
+>[] = [
     // CABIN 001
     {
         created_at: fromToday(-20, true),

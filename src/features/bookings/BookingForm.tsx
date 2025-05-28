@@ -23,7 +23,7 @@ import {
     type BookingForm as BookingFormT,
     type BookingRow,
 } from '@/types/bookings';
-import { getCreateBooking, getEditBooking } from '@/utils/helpers';
+import { prepareBooking } from '@/utils/helpers';
 import { useSettings } from '@/utils/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -236,10 +236,11 @@ const BookingForm = (props: Props) => {
 
         const cabin = cabinsQuery.data.cabins.find((c) => c.id === formData.cabinId);
         if (props.mode === 'create' && cabin) {
-            const booking = getCreateBooking({
+            const booking = prepareBooking({
                 formData,
                 cabin,
                 breakfastPrice: settingsQuery.data.breakfastPrice,
+                type: props.mode,
             });
             createBookingMutation.mutate(booking);
         }
@@ -247,10 +248,11 @@ const BookingForm = (props: Props) => {
         if (props.mode === 'edit' && cabin) {
             editBookingMutation.mutate({
                 id: props.booking.id.toString(),
-                obj: getEditBooking({
+                obj: prepareBooking({
                     formData,
                     cabin,
                     breakfastPrice: settingsQuery.data.breakfastPrice,
+                    type: props.mode,
                 }),
             });
         }

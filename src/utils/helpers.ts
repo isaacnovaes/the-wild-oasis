@@ -40,60 +40,70 @@ const statusToStyleMap: Record<Booking['status'], { color: string; background: s
 
 export const getBookingStatusStyle = (status: Booking['status']) => statusToStyleMap[status];
 
-export const getCreateBooking = ({
+type PrepareBooking =
+    | {
+          formData: BookingForm;
+          cabin: Awaited<ReturnType<typeof getAllCabins>>['cabins'][0];
+          breakfastPrice: number;
+          type: 'create';
+      }
+    | {
+          formData: BookingForm;
+          cabin: Awaited<ReturnType<typeof getAllCabins>>['cabins'][0];
+          breakfastPrice: number;
+          type: 'edit';
+      };
+
+export function prepareBooking({
     cabin,
     formData,
     breakfastPrice,
+    type,
 }: {
     formData: BookingForm;
     cabin: Awaited<ReturnType<typeof getAllCabins>>['cabins'][0];
     breakfastPrice: number;
-}): CreateBooking => {
-    return {
-        startDate: formatISO(formData.bookingDates.from),
-        endDate: formatISO(formData.bookingDates.to),
-        numNights: formData.numNights,
-        numGuests: formData.numGuests,
-        cabinPrice: cabin.regularPrice,
-        extrasPrice: formData.hasBreakfast
-            ? breakfastPrice * formData.numGuests * formData.numNights
-            : 0,
-        status: 'unconfirmed',
-        hasBreakfast: formData.hasBreakfast,
-        isPaid: formData.isPaid,
-        observations: formData.observations,
-        totalPrice:
-            cabin.regularPrice * formData.numNights +
-            (formData.hasBreakfast ? breakfastPrice * formData.numGuests * formData.numNights : 0),
-        cabinId: formData.cabinId,
-        guestId: formData.guestId,
-    };
-};
-export const getEditBooking = ({
+    type: 'edit';
+}): Omit<CreateBooking, 'status'>;
+export function prepareBooking({
     cabin,
     formData,
     breakfastPrice,
+    type,
 }: {
     formData: BookingForm;
     cabin: Awaited<ReturnType<typeof getAllCabins>>['cabins'][0];
     breakfastPrice: number;
-}) => {
-    return {
+    type: 'create';
+}): CreateBooking;
+export function prepareBooking({ cabin, formData, breakfastPrice, type }: PrepareBooking) {
+    const extrasPrice = formData.hasBreakfast
+        ? breakfastPrice * formData.numGuests * formData.numNights
+        : 0;
+
+    const bookingWithoutStatus = {
         startDate: formatISO(formData.bookingDates.from),
         endDate: formatISO(formData.bookingDates.to),
         numNights: formData.numNights,
         numGuests: formData.numGuests,
-        cabinPrice: cabin.regularPrice,
-        extrasPrice: formData.hasBreakfast
-            ? breakfastPrice * formData.numGuests * formData.numNights
-            : 0,
+        cabinPrice: formData.numGuests * (cabin.regularPrice - cabin.discount),
+        extrasPrice,
         hasBreakfast: formData.hasBreakfast,
         isPaid: formData.isPaid,
         observations: formData.observations,
         totalPrice:
-            cabin.regularPrice * formData.numNights +
-            (formData.hasBreakfast ? breakfastPrice * formData.numGuests * formData.numNights : 0),
+            cabin.regularPrice * formData.numNights + (formData.hasBreakfast ? extrasPrice : 0),
         cabinId: formData.cabinId,
         guestId: formData.guestId,
     };
-};
+
+    if (type === 'create') {
+        const createBooking: CreateBooking = {
+            ...bookingWithoutStatus,
+            status: 'unconfirmed',
+        };
+        return createBooking;
+    }
+
+    return bookingWithoutStatus;
+}

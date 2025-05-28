@@ -1,8 +1,12 @@
-import { isFuture, isPast, isToday } from 'date-fns';
-import { useState } from 'react';
-import supabase from '../supabase.ts';
-
 import { getSettings } from '@/services/apiSettings.ts';
+import { CabinSchema } from '@/types/cabins.ts';
+import { GuestSchema } from '@/types/guests.ts';
+import { useQueryClient } from '@tanstack/react-query';
+import { isFuture, isPast, isToday } from 'date-fns';
+import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { z } from 'zod';
+import supabase from '../supabase.ts';
 import type { Booking } from '../types/bookings';
 import { subtractDates } from '../utils/helpers.ts';
 import { bookings } from './data-bookings';
@@ -11,41 +15,68 @@ import { guests } from './data-guests';
 
 async function deleteGuests() {
     const { error } = await supabase.from('guests').delete().gt('id', 0);
-    if (error) console.log(error.message);
+    if (error) console.error(error.message);
 }
 
 async function deleteCabins() {
     const { error } = await supabase.from('cabins').delete().gt('id', 0);
-    if (error) console.log(error.message);
+    if (error) console.error(error.message);
 }
 
 async function deleteBookings() {
     const { error } = await supabase.from('bookings').delete().gt('id', 0);
-    if (error) console.log(error.message);
+    if (error) console.error(error.message);
 }
 
 async function createGuests() {
     const { error } = await supabase.from('guests').insert(guests);
-    if (error) console.log(error.message);
+    if (error) console.error(error.message);
 }
 
 async function createCabins() {
     const { error } = await supabase.from('cabins').insert(cabins);
-    if (error) console.log(error.message);
+    if (error) console.error(error.message);
 }
 
 async function createBookings() {
-    // Bookings need a guestId and a cabinId. We can't tell Supabase IDs for each object, it will calculate them on its own. So it might be different for different people, especially after multiple uploads. Therefore, we need to first get all guestIds and cabinIds, and then replace the original IDs in the booking data with the actual ones from the DB
-    const { data: guestsIds } = await supabase.from('guests').select('id').order('id');
-    const allGuestIds = guestsIds?.map((guest) => guest.id);
-    const { data: cabinsIds } = await supabase.from('cabins').select('id').order('id');
+    const { data: dataGuests } = await supabase.from('guests').select('id').order('id');
+
+    const guestsIdsResponseValidation = z
+        .object({ guests: z.array(GuestSchema.pick({ id: true })) })
+        .safeParse(dataGuests);
+
+    if (guestsIdsResponseValidation.error) {
+        throw new Error(guestsIdsResponseValidation.error.message);
+    }
+
+    const guestsIds = guestsIdsResponseValidation.data.guests;
+    const allGuestIds = guestsIds.map((g) => g.id);
+
+    const { data: dataCabins } = await supabase.from('cabins').select('id').order('id');
+
+    const cabinsIdsResponseValidation = z
+        .object({ cabins: z.array(CabinSchema.pick({ id: true })) })
+        .safeParse(dataCabins);
+
+    if (cabinsIdsResponseValidation.error) {
+        throw new Error(cabinsIdsResponseValidation.error.message);
+    }
+
+    const cabinsIds = guestsIdsResponseValidation.data.guests;
+    const allCabinIds = cabinsIds.map((c) => c.id);
+
     const settings = await getSettings();
 
-    const allCabinIds = cabinsIds?.map((cabin) => cabin.id);
-
-    const finalBookings = bookings.map((booking): Booking => {
+    const finalBookings = bookings.map((booking): Omit<Booking, 'id'> => {
         // Here relying on the order of cabins, as they don't have an ID yet
         const cabin = cabins.at(booking.cabinId - 1);
+        const guestId = allGuestIds.at(booking.guestId - 1);
+        const cabinId = allCabinIds.at(booking.cabinId - 1);
+
+        if (!cabin || !guestId || !cabinId) {
+            throw new Error(`No cabin at position [${(booking.cabinId - 1).toString()}]`);
+        }
+
         const numNights = subtractDates(booking.endDate, booking.startDate);
         const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);
         const extrasPrice = booking.hasBreakfast
@@ -53,17 +84,11 @@ async function createBookings() {
             : 0;
         const totalPrice = cabinPrice * numNights + extrasPrice;
 
-        let status;
+        let status: Booking['status'] = 'checked-in';
         if (isPast(new Date(booking.endDate)) && !isToday(new Date(booking.endDate)))
             status = 'checked-out';
         if (isFuture(new Date(booking.startDate)) || isToday(new Date(booking.startDate)))
             status = 'unconfirmed';
-        if (
-            (isFuture(new Date(booking.endDate)) || isToday(new Date(booking.endDate))) &&
-            isPast(new Date(booking.startDate)) &&
-            !isToday(new Date(booking.startDate))
-        )
-            status = 'checked-in';
 
         return {
             ...booking,
@@ -71,18 +96,19 @@ async function createBookings() {
             cabinPrice,
             extrasPrice,
             totalPrice,
-            guestId: allGuestIds.at(booking.guestId - 1),
-            cabinId: allCabinIds.at(booking.cabinId - 1),
+            guestId,
+            cabinId,
             status,
         };
     });
 
     const { error } = await supabase.from('bookings').insert(finalBookings);
-    if (error) console.log(error.message);
+    if (error) console.error(error.message);
 }
 
 function Uploader() {
     const [isLoading, setIsLoading] = useState(false);
+    const queryClient = useQueryClient();
 
     async function uploadAll() {
         setIsLoading(true);
@@ -96,6 +122,8 @@ function Uploader() {
         await createCabins();
         await createBookings();
 
+        await queryClient.invalidateQueries();
+
         setIsLoading(false);
     }
 
@@ -103,6 +131,7 @@ function Uploader() {
         setIsLoading(true);
         await deleteBookings();
         await createBookings();
+        await queryClient.invalidateQueries({ queryKey: ['bookings'] });
         setIsLoading(false);
     }
 
@@ -121,23 +150,32 @@ function Uploader() {
         >
             <h3>SAMPLE DATA</h3>
 
-            <button
-                className='cursor-pointer rounded-md border-2 border-indigo-400 p-2 hover:border-indigo-700'
-                disabled={isLoading}
-                type='button'
-                onClick={uploadAll}
-            >
-                Upload ALL
-            </button>
-
-            <button
-                className='cursor-pointer rounded-md border-2 border-indigo-400 p-2 hover:border-indigo-700'
-                disabled={isLoading}
-                type='button'
-                onClick={uploadBookings}
-            >
-                Upload bookings ONLY
-            </button>
+            {isLoading ? (
+                <Loader2 className='size-12 animate-spin stroke-indigo-500' />
+            ) : (
+                <>
+                    <button
+                        className='cursor-pointer rounded-md border-2 border-indigo-400 p-2 hover:border-indigo-700'
+                        disabled={isLoading}
+                        type='button'
+                        onClick={() => {
+                            void uploadAll();
+                        }}
+                    >
+                        Upload ALL
+                    </button>
+                    <button
+                        className='cursor-pointer rounded-md border-2 border-indigo-400 p-2 hover:border-indigo-700'
+                        disabled={isLoading}
+                        type='button'
+                        onClick={() => {
+                            void uploadBookings();
+                        }}
+                    >
+                        Upload bookings ONLY
+                    </button>
+                </>
+            )}
         </div>
     );
 }

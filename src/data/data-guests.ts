@@ -4,7 +4,6 @@ import type { Guest } from '../types/guests';
 
 export const guests: Omit<Guest, 'created_at' | 'id'>[] = [
     {
-        // id: 1000,
         fullName: 'Jonas Schmedtmann',
         email: 'hello@jonas.io',
         nationality: 'Portugal',
@@ -46,8 +45,6 @@ export const guests: Omit<Guest, 'created_at' | 'id'>[] = [
         nationalId: '633678543',
         countryFlag: 'https://flagcdn.com/us.svg',
     },
-
-    // GPT
     {
         fullName: 'Emma Watson',
         email: 'emma@gmail.com',

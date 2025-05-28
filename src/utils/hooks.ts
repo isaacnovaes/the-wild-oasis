@@ -25,15 +25,16 @@ export const useDeleteBookingMutation = () => {
     return useMutation({
         mutationKey: ['bookings', 'delete'],
         mutationFn: deleteBooking,
-        onSuccess: ({ updateCabin }, { id, cabinId: editedCabinId }) => {
-            toast.success(`Booking ${id} successful deleted`);
+        onMutate: ({ id }) => toast.loading(`Deleting booking #${id}`),
+        onSuccess: ({ updateCabin }, { id, cabinId: editedCabinId }, toasterId) => {
+            toast.success(`Booking ${id} successful deleted`, { id: toasterId });
             void queryClient.invalidateQueries({ queryKey: ['bookings'] });
             if (updateCabin) {
                 toast(`Cabin ${editedCabinId} unlinked from bookings`);
                 void queryClient.invalidateQueries({ queryKey: ['cabins'] });
             }
         },
-        onError: (error) => toast.error(error.message),
+        onError: (error, _vars, toasterId) => toast.error(error.message, { id: toasterId }),
     });
 };
 
@@ -56,8 +57,11 @@ export const useCheckIn = () => {
         }) => {
             return updateBooking(bookingId, { status: 'checked-in', ...breakfastInfo });
         },
-        onSuccess: (booking, { bookingId }) => {
-            toast.success(`Booking ${booking.id.toString()} successfully checked in`);
+        onMutate: ({ bookingId }) => toast.loading(`Checking in booking #${bookingId}`),
+        onSuccess: (booking, { bookingId }, toasterId) => {
+            toast.success(`Booking ${booking.id.toString()} successfully checked in`, {
+                id: toasterId,
+            });
             void queryClient.invalidateQueries({
                 queryKey: ['bookings'],
             });
@@ -65,8 +69,8 @@ export const useCheckIn = () => {
                 queryKey: ['bookings', 'booking', bookingId],
             });
         },
-        onError: (error) => {
-            toast.error(error.message);
+        onError: (error, _vars, toasterId) => {
+            toast.error(error.message, { id: toasterId });
         },
     });
 };
@@ -78,8 +82,13 @@ export const useCheckOut = () => {
         mutationFn: async (bookingId: string) => {
             return updateBooking(bookingId, { status: 'checked-out' });
         },
-        onSuccess: (booking, bookingId) => {
-            toast.success(`Booking ${booking.id.toString()} successfully checked out`);
+        onMutate: (bookingId) => {
+            return toast.loading(`Checking out booking #${bookingId}`);
+        },
+        onSuccess: (booking, bookingId, toastId) => {
+            toast.success(`Booking ${booking.id.toString()} successfully checked out`, {
+                id: toastId,
+            });
             void queryClient.invalidateQueries({
                 queryKey: ['bookings'],
             });
@@ -87,8 +96,8 @@ export const useCheckOut = () => {
                 queryKey: ['bookings', 'booking', bookingId],
             });
         },
-        onError: (error) => {
-            toast.error(error.message);
+        onError: (error, _vars, toastId) => {
+            toast.error(error.message, { id: toastId });
         },
     });
 };
@@ -111,12 +120,13 @@ export const useUpdateUserMutation = () => {
     return useMutation({
         mutationKey: ['user'],
         mutationFn: updateCurrentUser,
-        onSuccess: async () => {
+        onMutate: () => toast.loading('Updating user'),
+        onSuccess: async (_data, _vars, toasterId) => {
             await queryClient.invalidateQueries({ queryKey: ['user'] });
-            toast.success('User updated');
+            toast.success('User updated', { id: toasterId });
         },
-        onError: (e) => {
-            toast.error(e.message);
+        onError: (e, _vars, toasterId) => {
+            toast.error(e.message, { id: toasterId });
         },
     });
 };

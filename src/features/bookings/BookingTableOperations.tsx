@@ -20,11 +20,11 @@ const sortByOptions: SelectOption[] = [
     { value: 'all', label: 'Sort fields' },
     {
         value: 'startDate-desc',
-        label: 'Sort by start date (recent first)',
+        label: 'Sort by start date (newer first)',
     },
     {
         value: 'startDate-asc',
-        label: 'Sort by start date (earlier first)',
+        label: 'Sort by start date (older first)',
     },
     {
         value: 'id-desc',

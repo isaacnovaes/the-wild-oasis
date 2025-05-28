@@ -15,12 +15,13 @@ const SettingsForm = ({ settings }: { readonly settings: Settings }) => {
     const { mutate } = useMutation({
         mutationKey: ['settings', 'form'],
         mutationFn: updateSetting,
-        onSuccess: () => {
-            toast.success('Settings updated');
+        onMutate: () => toast.loading('Updating setting'),
+        onSuccess: (_data, _vars, toasterId) => {
+            toast.success('Settings updated', { id: toasterId });
             void queryClient.invalidateQueries({ queryKey: ['settings'] });
         },
-        onError: (e) => {
-            toast.error(e.message);
+        onError: (e, _vars, toasterId) => {
+            toast.error(e.message, { id: toasterId });
         },
     });
 

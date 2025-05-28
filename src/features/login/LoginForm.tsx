@@ -43,7 +43,7 @@ const LoginForm = () => {
         mutationKey: ['login'],
         onSuccess: (user) => {
             queryClient.setQueryData(['user'], user.user);
-            void navigate({ to: '/dashboard', replace: true });
+            void navigate({ to: '/dashboard', search: { last: 7 }, replace: true });
         },
         onError: (err) => {
             console.log('ERROR', err);

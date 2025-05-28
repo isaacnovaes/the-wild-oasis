@@ -88,7 +88,7 @@ const BookingForm = (props: Props) => {
     });
 
     const cabinsQuery = useQuery({
-        queryKey: ['cabins', 'form'],
+        queryKey: ['cabins', 'all'],
         queryFn: async () => {
             return getAllCabins();
         },
@@ -107,13 +107,16 @@ const BookingForm = (props: Props) => {
     const createBookingMutation = useMutation({
         mutationKey: ['bookings', 'create'],
         mutationFn: createBooking,
-        onSuccess: (b) => {
-            toast.success(`Booking with id ${b.id.toString()} successfully created`);
+        onMutate: () => toast.loading(`Creating booking`),
+        onSuccess: (b, _vars, toasterId) => {
+            toast.success(`Booking with id ${b.id.toString()} successfully created`, {
+                id: toasterId,
+            });
             void queryClient.invalidateQueries({ queryKey: ['bookings'] });
             props.onSuccess();
         },
-        onError: (error) => {
-            toast.error(error.message);
+        onError: (error, _vars, toasterId) => {
+            toast.error(error.message, { id: toasterId });
         },
     });
 
@@ -122,13 +125,14 @@ const BookingForm = (props: Props) => {
         mutationFn: async ({ id, obj }: { id: string; obj: Partial<Booking> }) => {
             return updateBooking(id, obj);
         },
-        onSuccess: (b) => {
-            toast.success(`Booking  ${b.id.toString()} successfully edited`);
+        onMutate: ({ id }) => toast.loading(`Editing booking #${id}`),
+        onSuccess: (b, _vars, toasterId) => {
+            toast.success(`Booking  ${b.id.toString()} successfully edited`, { id: toasterId });
             void queryClient.invalidateQueries({ queryKey: ['bookings'] });
             props.onSuccess();
         },
-        onError: (error) => {
-            toast.error(error.message);
+        onError: (error, _vars, toasterId) => {
+            toast.error(error.message, { id: toasterId });
         },
     });
 

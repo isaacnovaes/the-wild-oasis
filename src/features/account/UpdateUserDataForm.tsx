@@ -39,12 +39,20 @@ const UpdateUserDataForm = () => {
     const updateUserMutation = useUpdateUserMutation();
 
     const onSubmit = (formData: UpdateUser) => {
-        updateUserMutation.mutate({
-            ...formData,
-            avatar:
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-                formData.avatar instanceof FileList ? (formData.avatar.item(0) as File) : undefined,
-        });
+        updateUserMutation.mutate(
+            {
+                ...formData,
+                avatar:
+                    formData.avatar instanceof FileList
+                        ? (formData.avatar.item(0) as File)
+                        : undefined,
+            },
+            {
+                onSuccess: () => {
+                    form.reset();
+                },
+            }
+        );
     };
 
     return (

@@ -40,24 +40,26 @@ const CabinRowOperations = ({ cabin }: { readonly cabin: Cabin }) => {
     const duplicateCabinMutation = useMutation({
         mutationFn: createEditCabin,
         mutationKey: ['cabins', 'duplicate'],
-        onSuccess: () => {
-            toast.success('Cabin duplicated');
+        onMutate: () => toast.loading('Duplicating cabin'),
+        onSuccess: (_data, _vars, toasterId) => {
+            toast.success('Cabin duplicated', { id: toasterId });
             void queryClient.invalidateQueries({ queryKey: ['cabins'] });
         },
-        onError: (error) => {
-            toast.error(error.message);
+        onError: (error, _vars, toasterId) => {
+            toast.error(error.message, { id: toasterId });
         },
     });
 
     const deleteCabinMutation = useMutation({
         mutationFn: deleteCabin,
         mutationKey: ['cabins', 'delete'],
-        onSuccess: (_data, variables) => {
-            toast.success(`Cabin ${variables.toString()} deleted`);
+        onMutate: () => toast.loading('Deleting cabin'),
+        onSuccess: (_data, variables, toasterId) => {
+            toast.success(`Cabin ${variables.toString()} deleted`, { id: toasterId });
             void queryClient.invalidateQueries({ queryKey: ['cabins'] });
         },
-        onError: (error) => {
-            toast.error(error.message);
+        onError: (error, _vars, toasterId) => {
+            toast.error(error.message, { id: toasterId });
         },
     });
 

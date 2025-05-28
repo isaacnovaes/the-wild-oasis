@@ -43,15 +43,22 @@ const CabinForm = (props: Props) => {
     const createEditCabinMutation = useMutation({
         mutationFn: createEditCabin,
         mutationKey: ['cabins', 'create-edit'],
-        onSuccess: (cabin) => {
+        onMutate: ({ id }) =>
+            toast.loading(
+                props.mode === 'create'
+                    ? 'Creating cabin'
+                    : `Editing cabin #${id?.toString() ?? ''}`
+            ),
+        onSuccess: (cabin, _vars, toasterId) => {
             void queryClient.invalidateQueries({ queryKey: ['cabins'] });
             toast.success(
-                `Cabin ${cabin.id.toString()} ${props.mode === 'create' ? 'created' : 'edited'}`
+                `Cabin ${cabin.id.toString()} ${props.mode === 'create' ? 'created' : 'edited'}`,
+                { id: toasterId }
             );
             props.onSuccess();
         },
-        onError: (e) => {
-            toast.error(e.message);
+        onError: (e, _vars, toasterId) => {
+            toast.error(e.message, { id: toasterId });
         },
     });
 

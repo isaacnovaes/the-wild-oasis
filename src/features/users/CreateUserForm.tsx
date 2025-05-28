@@ -41,14 +41,17 @@ const CreateUserForm = () => {
     const createUserMutation = useMutation({
         mutationFn: signup,
         mutationKey: ['signup'],
-        onSuccess: (user) => {
+        onMutate: () => toast.loading('Creating user'),
+        onSuccess: (user, _vars, toasterId) => {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-            toast.success(`User ${user?.user_metadata.fullName as string} created `);
+            toast.success(`User ${user?.user_metadata.fullName as string} created `, {
+                id: toasterId,
+            });
             form.reset();
         },
-        onError: (err) => {
+        onError: (err, _vars, toasterId) => {
             console.log('ERROR', err);
-            toast.error(err.message);
+            toast.error(err.message, { id: toasterId });
         },
     });
 

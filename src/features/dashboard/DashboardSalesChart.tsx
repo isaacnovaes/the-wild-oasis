@@ -4,6 +4,7 @@ import {
     Area,
     AreaChart,
     CartesianGrid,
+    Legend,
     ResponsiveContainer,
     Tooltip,
     XAxis,
@@ -42,7 +43,7 @@ const DashboardSalesChart = (props: {
     const endDate = allDates.at(-1) ?? new Date();
 
     return (
-        <div className='col-span-full flex flex-col gap-10 rounded-md border-2 border-gray-100 bg-white p-5'>
+        <div className='col-span-full flex flex-col gap-1 rounded-md border-2 border-gray-100 bg-white p-5'>
             <h2 className='font-semibold'>
                 Sales for{' '}
                 <span className='text-indigo-500 italic'>{format(startDate, 'MMM dd, yyyy')}</span>{' '}
@@ -82,6 +83,7 @@ const DashboardSalesChart = (props: {
                         type='monotone'
                         unit='$'
                     />
+                    <Legend height={36} verticalAlign='top' />
                 </AreaChart>
             </ResponsiveContainer>
         </div>

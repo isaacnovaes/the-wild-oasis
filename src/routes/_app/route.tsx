@@ -36,7 +36,7 @@ function RouteComponent() {
                         <div className='flex flex-col items-center justify-between md:flex-row md:gap-4'>
                             <img
                                 alt='logo'
-                                className='h-10 rounded-full border-2 border-indigo-400'
+                                className='aspect-square h-10 rounded-full border-2 border-indigo-400 object-fill'
                                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                                 src={user?.user_metadata.avatar ?? '/default-user.jpg'}
                             />

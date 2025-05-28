@@ -1,4 +1,5 @@
 import type { SearchParams } from '@/types/global';
+import { endOfDay, formatISO, startOfDay } from 'date-fns';
 import { z } from 'zod';
 import supabase from '../supabase';
 import {
@@ -7,7 +8,6 @@ import {
     FullBookingSchema,
     type Booking,
     type CreateBooking,
-    type FullBooking,
 } from '../types/bookings';
 import { PAGE_SIZE } from '../utils/constants';
 import { getToday } from '../utils/helpers';
@@ -60,7 +60,7 @@ export async function getBookings({ filter, sortBy, page }: SearchParams) {
     return validation.data;
 }
 
-export async function getFullBooking(id: string): Promise<FullBooking> {
+export async function getFullBooking(id: string) {
     const response = await supabase
         .from('bookings')
         .select('*, cabins(*), guests(*)')
@@ -120,7 +120,7 @@ export async function updateBooking(id: string, obj: Partial<Booking>) {
 export async function getBookingsAfterDate(date: string) {
     const { data, error } = await supabase
         .from('bookings')
-        .select('created_at, totalPrice, extrasPrice')
+        .select('id, created_at, status, totalPrice, numNights, extrasPrice, guests(fullName)')
         .gte('created_at', date)
         .lte('created_at', getToday({ end: true }));
 
@@ -133,36 +133,11 @@ export async function getBookingsAfterDate(date: string) {
         id: true,
         // eslint-disable-next-line camelcase
         created_at: true,
+        status: true,
         totalPrice: true,
+        numNights: true,
         extrasPrice: true,
-    });
-
-    const responseSchema = z.object({
-        bookings: z.array(bookingResponseSchema),
-    });
-
-    const validation = responseSchema.safeParse({ bookings: data });
-
-    if (validation.error) {
-        console.error(validation.error);
-        throw new Error(validation.error.message);
-    }
-
-    return validation.data.bookings;
-}
-
-export async function getStaysAfterDate(date: string) {
-    const { data, error } = await supabase
-        .from('bookings')
-        .select('*, guests(fullName)')
-        .gte('startDate', date)
-        .lte('startDate', getToday());
-
-    if (error) {
-        console.error(error);
-        throw new Error(error.message);
-    }
-    const bookingResponseSchema = BookingSchema.omit({ guests: true }).extend({
+    }).extend({
         guests: z.object({
             fullName: z.string(),
         }),
@@ -183,24 +158,50 @@ export async function getStaysAfterDate(date: string) {
 }
 
 // Activity means that there is a check in or a check out today
-export async function getStaysTodayActivity(): Promise<Booking[]> {
+export async function getStaysTodayActivity() {
+    const startOfDayDate = startOfDay(new Date());
+    const startOfDayString = formatISO(startOfDayDate);
+    const endOfDayDate = endOfDay(new Date());
+    const endOfDayString = formatISO(endOfDayDate);
+
     const { data, error } = await supabase
         .from('bookings')
-        .select('*, guests(fullName, nationality, countryFlag)')
+        .select('id, status,numNights, guests(fullName, nationality, countryFlag)')
         .or(
-            `and(status.eq.unconfirmed,startDate.eq.${getToday()}),and(status.eq.checked-in,endDate.eq.${getToday()})`
+            `and(status.eq.unconfirmed,startDate.gte.${startOfDayString},startDate.lte.${endOfDayString}),` +
+                `and(status.eq.checked-in,endDate.gte.${startOfDayString},endDate.lte.${endOfDayString})`
         )
         .order('created_at');
-
-    // Equivalent to this. But by querying this, we only download the data we actually need, otherwise we would need ALL bookings ever created
-    // (stay.status === 'unconfirmed' && isToday(new Date(stay.startDate))) ||
-    // (stay.status === 'checked-in' && isToday(new Date(stay.endDate)))
 
     if (error) {
         console.error(error);
         throw new Error(error.message);
     }
-    return data;
+
+    const bookingResponseSchema = BookingSchema.pick({
+        id: true,
+        status: true,
+        numNights: true,
+    }).extend({
+        guests: z.object({
+            fullName: z.string(),
+            nationality: z.string(),
+            countryFlag: z.string(),
+        }),
+    });
+
+    const responseSchema = z.object({
+        bookings: z.array(bookingResponseSchema),
+    });
+
+    const validation = responseSchema.safeParse({ bookings: data });
+
+    if (validation.error) {
+        console.error(validation.error);
+        throw new Error(validation.error.message);
+    }
+
+    return validation.data.bookings;
 }
 
 export async function deleteBooking({ cabinId, id }: { id: string; cabinId: string }) {

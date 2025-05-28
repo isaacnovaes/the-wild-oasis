@@ -2,7 +2,7 @@ import { Link, linkOptions } from '@tanstack/react-router';
 import { CalendarDays, House, Settings, Users } from 'lucide-react';
 
 const navOptions = linkOptions([
-    { to: '/dashboard', label: 'Home', icon: House, search: {} },
+    { to: '/dashboard', label: 'Home', icon: House, search: { last: 7 } },
     {
         to: '/bookings',
         search: { page: 1 },

@@ -20,7 +20,7 @@ function Filter({
     const currentSearch = useSearch({ strict: false });
 
     return (
-        <div className='flex gap-x-1 rounded-sm border-none'>
+        <div className='flex gap-x-1 rounded-sm bg-white p-1 shadow-sm'>
             {options.map((option) => {
                 let isActive =
                     currentSearch.filter?.value === option.value &&
@@ -33,9 +33,10 @@ function Filter({
                 return (
                     <Button
                         key={`${option.value}${option.method}`}
-                        className={`hover:not-disabled:cursor-pointer aria-disabled:cursor-not-allowed ${isActive ? 'text-indigo-500' : 'text-slate-700'}`}
+                        className={`rounded-sm border-2 border-transparent px-2 text-sm font-normal ${isActive ? 'border-indigo-500 bg-indigo-500 text-white hover:cursor-not-allowed' : 'text-slate-700 hover:cursor-pointer hover:bg-indigo-100'}`}
+                        size='sm'
                         type='button'
-                        variant='link'
+                        variant='ghost'
                         onClick={() => {
                             const search: SearchParams = { page: 1 };
                             if (option.value !== 'all') {

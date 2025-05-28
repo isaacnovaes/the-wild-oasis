@@ -8,7 +8,7 @@ interface SelectProps extends Omit<ComponentPropsWithoutRef<'select'>, 'classNam
 function Select({ options, ...props }: SelectProps) {
     return (
         <select
-            className='rounded-sm bg-gray-50 p-1.5 text-sm font-medium text-slate-700 shadow-sm hover:cursor-pointer'
+            className='rounded-sm bg-white p-2.5 text-sm font-medium text-slate-700 shadow-sm hover:cursor-pointer'
             {...props}
         >
             {options.map((option) => (

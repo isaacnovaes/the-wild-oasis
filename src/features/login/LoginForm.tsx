@@ -46,7 +46,7 @@ const LoginForm = () => {
             void navigate({ to: '/dashboard', search: { last: 7 }, replace: true });
         },
         onError: (err) => {
-            console.log('ERROR', err);
+            console.error('ERROR', err);
             toast.error(err.message);
         },
     });

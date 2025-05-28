@@ -15,6 +15,7 @@ const colors = {
 
 const Stat = (props: {
     readonly color: keyof typeof colors;
+    // eslint-disable-next-line react/no-unused-prop-types
     readonly icon: ForwardRefExoticComponent<
         Omit<LucideProps, 'ref'> & RefAttributes<SVGSVGElement>
     >;

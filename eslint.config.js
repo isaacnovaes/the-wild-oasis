@@ -23,7 +23,7 @@ export default tseslintPlugin.config(
             'default-case': 'warn',
             'default-case-last': 'warn',
             'guard-for-in': 'error',
-            'no-console': 'warn',
+            'no-console': ['warn', { allow: ['error'] }],
             'no-lone-blocks': 'error',
             'no-param-reassign': 'error',
             'no-else-return': ['error', { allowElseIf: false }],

@@ -50,7 +50,7 @@ const CreateUserForm = () => {
             form.reset();
         },
         onError: (err, _vars, toasterId) => {
-            console.log('ERROR', err);
+            console.error('ERROR', err);
             toast.error(err.message, { id: toasterId });
         },
     });

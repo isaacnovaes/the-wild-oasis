@@ -1,3 +1,4 @@
+import { seedDb } from '@/data/uploader';
 import type { UserAttributes } from '@supabase/supabase-js';
 import supabase, { SUPABASE_URL } from '../supabase';
 
@@ -32,6 +33,8 @@ export async function login({ email, password }: { email: string; password: stri
         password,
     });
     if (error) throw new Error(error.message);
+
+    await seedDb();
 
     return data;
 }

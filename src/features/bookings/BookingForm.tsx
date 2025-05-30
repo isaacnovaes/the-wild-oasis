@@ -28,7 +28,7 @@ import { useSettings } from '@/utils/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ErrorComponent } from '@tanstack/react-router';
-import { add, areIntervalsOverlapping, format, interval } from 'date-fns';
+import { add, areIntervalsOverlapping, differenceInCalendarDays, format, interval } from 'date-fns';
 import { CalendarIcon, Loader } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -53,7 +53,6 @@ const BookingForm = (props: Props) => {
                       cabinId: 0,
                       bookingDates: { from: new Date(), to: add(new Date(), { days: 3 }) },
                       numGuests: 1,
-                      numNights: 1,
                       hasBreakfast: false,
                       isPaid: false,
                       observations: '',
@@ -66,7 +65,6 @@ const BookingForm = (props: Props) => {
                           to: new Date(props.booking.endDate),
                       },
                       numGuests: props.booking.numGuests,
-                      numNights: props.booking.numNights,
                       hasBreakfast: props.booking.hasBreakfast,
                       isPaid: props.booking.isPaid,
                       observations: props.booking.observations,
@@ -214,16 +212,21 @@ const BookingForm = (props: Props) => {
             isError = true;
         }
 
-        if (formData.numNights > maxBookingLength) {
-            form.setError('numNights', {
+        const numNights = differenceInCalendarDays(
+            formData.bookingDates.to,
+            formData.bookingDates.from
+        );
+
+        if (numNights > maxBookingLength) {
+            form.setError('bookingDates.to', {
                 message: `Max number of nights setting is ${maxBookingLength.toString()}`,
                 type: 'validate',
             });
             isError = true;
         }
 
-        if (formData.numNights < minBookingLength) {
-            form.setError('numNights', {
+        if (numNights < minBookingLength) {
+            form.setError('bookingDates.to', {
                 message: `Min number of nights setting is ${minBookingLength.toString()}`,
                 type: 'validate',
             });
@@ -361,25 +364,6 @@ const BookingForm = (props: Props) => {
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Number of guests</FormLabel>
-                            <FormControl>
-                                <Input
-                                    placeholder='0'
-                                    {...field}
-                                    inputMode='decimal'
-                                    type='number'
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name='numNights'
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Number of nights</FormLabel>
                             <FormControl>
                                 <Input
                                     placeholder='0'

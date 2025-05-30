@@ -1,5 +1,11 @@
 import type { getAllCabins } from '@/services/apiCabins';
-import { differenceInDays, formatDistance, formatISO, parseISO } from 'date-fns';
+import {
+    differenceInCalendarDays,
+    differenceInDays,
+    formatDistance,
+    formatISO,
+    parseISO,
+} from 'date-fns';
 import type { Booking, BookingForm, CreateBooking } from '../types/bookings';
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)
@@ -77,22 +83,23 @@ export function prepareBooking({
     type: 'create';
 }): CreateBooking;
 export function prepareBooking({ cabin, formData, breakfastPrice, type }: PrepareBooking) {
-    const extrasPrice = formData.hasBreakfast
-        ? breakfastPrice * formData.numGuests * formData.numNights
-        : 0;
+    const numNights = differenceInCalendarDays(
+        formData.bookingDates.to,
+        formData.bookingDates.from
+    );
+    const extrasPrice = formData.hasBreakfast ? breakfastPrice * formData.numGuests * numNights : 0;
 
     const bookingWithoutStatus = {
         startDate: formatISO(formData.bookingDates.from),
         endDate: formatISO(formData.bookingDates.to),
-        numNights: formData.numNights,
+        numNights,
         numGuests: formData.numGuests,
         cabinPrice: formData.numGuests * (cabin.regularPrice - cabin.discount),
         extrasPrice,
         hasBreakfast: formData.hasBreakfast,
         isPaid: formData.isPaid,
         observations: formData.observations,
-        totalPrice:
-            cabin.regularPrice * formData.numNights + (formData.hasBreakfast ? extrasPrice : 0),
+        totalPrice: cabin.regularPrice * numNights + (formData.hasBreakfast ? extrasPrice : 0),
         cabinId: formData.cabinId,
         guestId: formData.guestId,
     };

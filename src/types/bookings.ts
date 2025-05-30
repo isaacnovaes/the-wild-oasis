@@ -67,7 +67,6 @@ export const BookingFormSchema = BookingSchema.omit({
     startDate: true,
     endDate: true,
 }).extend({
-    numNights: z.coerce.number().int('Only integers').positive('Positive value only'),
     numGuests: z.coerce.number().int('Only integers').positive('Positive value only'),
     bookingDates: z.object({
         from: z.date(),

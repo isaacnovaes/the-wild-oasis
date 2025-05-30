@@ -1,10 +1,6 @@
 import { useSearch } from '@tanstack/react-router';
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
 
-const Footer = (props: { readonly children: ReactNode }) => {
-    return <footer className='bg-gray-50 empty:hidden'>{props.children}</footer>;
-};
-
 const Empty = (props: { readonly children: ReactNode }) => {
     return <p className='m-10 text-center text-3xl font-medium'>{props.children}</p>;
 };
@@ -25,7 +21,10 @@ function Table({ columns, children }: { readonly columns: string; readonly child
     const value = useMemo(() => ({ columns }), [columns]);
     return (
         <TableContext.Provider value={value}>
-            <div className='rounded-b-lg border-1 border-gray-200 shadow-md' role='table'>
+            <div
+                className='@container/table rounded-b-lg border-1 border-gray-200 shadow-md'
+                role='table'
+            >
                 {children}
             </div>
         </TableContext.Provider>
@@ -36,7 +35,7 @@ function Header({ children }: { readonly children: ReactNode }) {
     const columns = useColumns();
     return (
         <header
-            className={`grid ${columns} items-center gap-x-5 rounded-sm border-b-1 border-gray-100 bg-zinc-100 p-4 text-sm font-semibold tracking-widest text-gray-600 uppercase shadow-sm`}
+            className={`grid ${columns} w-max rounded-sm border-b-1 border-gray-100 bg-zinc-100 text-xs font-semibold tracking-widest text-gray-600 uppercase shadow-sm @4xl/table:w-auto`}
             role='row'
         >
             {children}
@@ -44,24 +43,14 @@ function Header({ children }: { readonly children: ReactNode }) {
     );
 }
 
-function Row({ children }: { readonly children: ReactNode }) {
-    const columns = useColumns();
-    return (
-        <div
-            className={`grid ${columns} items-center gap-x-5 border-b-2 border-b-gray-100 px-2 py-1`}
-            role='row'
-        >
-            {children}
-        </div>
-    );
-}
-
 function Body<T>({
     data,
     render,
+    header,
 }: {
     readonly data: T[];
     readonly render: (item: T) => ReactNode;
+    readonly header: ReactNode;
 }) {
     const { page } = useSearch({ strict: false });
     if (!data.length)
@@ -72,10 +61,40 @@ function Body<T>({
             </Empty>
         );
 
-    return <section className='mx-2 overflow-auto'>{data.map(render)}</section>;
+    return (
+        <section className='overflow-auto'>
+            <Header>{header}</Header>
+            {data.map(render)}
+        </section>
+    );
 }
 
-Table.Header = Header;
+function Row({
+    children,
+    className,
+}: {
+    readonly children: ReactNode;
+    readonly className?: string;
+}) {
+    const columns = useColumns();
+    return (
+        <div
+            className={`grid ${columns} border-b-2 border-b-gray-100 ${className ?? ''}`}
+            role='row'
+        >
+            {children}
+        </div>
+    );
+}
+
+const Footer = (props: { readonly children: ReactNode }) => {
+    return (
+        <footer className='@container/table-footer bg-gray-50 empty:hidden'>
+            {props.children}
+        </footer>
+    );
+};
+
 Table.Body = Body;
 Table.Row = Row;
 Table.Footer = Footer;

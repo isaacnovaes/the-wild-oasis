@@ -16,7 +16,7 @@ function SortBy({
 
     const value = options.find((option) => option.value === selectedValue)?.value ?? 'all';
 
-    return <Select options={options} value={value} onChange={handleChange} />;
+    return <Select id='selectBy' options={options} value={value} onChange={handleChange} />;
 }
 
 export default SortBy;

@@ -43,14 +43,14 @@ const DashboardSalesChart = (props: {
     const endDate = allDates.at(-1) ?? new Date();
 
     return (
-        <div className='col-span-full flex flex-col gap-1 rounded-md border-2 border-gray-100 bg-white p-5'>
+        <div className='col-span-full flex flex-col gap-1 overflow-auto rounded-md border-2 border-gray-100 bg-white p-5'>
             <h2 className='font-semibold'>
                 Sales for{' '}
                 <span className='text-indigo-500 italic'>{format(startDate, 'MMM dd, yyyy')}</span>{' '}
                 &mdash;{' '}
                 <span className='text-indigo-500 italic'>{format(endDate, 'MMM dd, yyyy')}</span>
             </h2>
-            <ResponsiveContainer height={300} width='100%'>
+            <ResponsiveContainer height={300} minWidth={600} width='100%'>
                 <AreaChart data={data}>
                     <XAxis
                         dataKey='label'
@@ -77,7 +77,7 @@ const DashboardSalesChart = (props: {
                     <Area
                         dataKey='extrasSales'
                         fill={colors.extrasSales.fill}
-                        name='Extras sales'
+                        name='Extra sales'
                         stroke={colors.extrasSales.stroke}
                         strokeWidth={2}
                         type='monotone'

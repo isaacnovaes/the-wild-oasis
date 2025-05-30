@@ -8,7 +8,7 @@ const DashBoardOperations = () => {
                     className:
                         'text-white border-indigo-500 bg-indigo-500 hover:cursor-not-allowed',
                 }}
-                className='rounded-sm border-2 border-transparent px-2 text-sm font-normal'
+                className='rounded-sm border-2 border-transparent px-2 text-xs font-normal md:text-sm'
                 inactiveProps={{
                     className: 'text-slate-700 hover:cursor-pointer hover:bg-indigo-100',
                 }}
@@ -22,7 +22,7 @@ const DashBoardOperations = () => {
                     className:
                         'text-white border-indigo-500 bg-indigo-500 hover:cursor-not-allowed',
                 }}
-                className='rounded-sm border-2 border-transparent px-2 text-sm font-normal'
+                className='rounded-sm border-2 border-transparent px-2 text-xs font-normal md:text-sm'
                 inactiveProps={{
                     className: 'text-slate-700 hover:cursor-pointer hover:bg-indigo-200',
                 }}
@@ -34,9 +34,9 @@ const DashBoardOperations = () => {
             <Link
                 activeProps={{
                     className:
-                        'text-white  border-indigo-500 bg-indigo-500 hover:cursor-not-allowed',
+                        'text-white border-indigo-500 bg-indigo-500 hover:cursor-not-allowed',
                 }}
-                className='rounded-sm border-2 border-transparent px-2 text-sm font-normal'
+                className='rounded-sm border-2 border-transparent px-2 text-xs font-normal md:text-sm'
                 inactiveProps={{
                     className: 'text-slate-700 hover:cursor-pointer hover:bg-indigo-200',
                 }}

@@ -97,7 +97,7 @@ const DashboardSummary = (props: {
 
     return (
         <>
-            <div className='col-span-2 overflow-auto rounded-sm border-2 border-gray-100 bg-white p-5'>
+            <div className='col-span-2 overflow-auto rounded-sm border-2 border-gray-100 bg-white p-5 @5xl/route:col-start-1 @5xl/route:col-end-3'>
                 <h2 className='font-semibold'>Today</h2>
                 <div>
                     {todayBookingsQuery.data.length ? (
@@ -149,9 +149,9 @@ const DashboardSummary = (props: {
                     )}
                 </div>
             </div>
-            <div className='col-span-2 rounded-sm border-2 border-gray-100 bg-white p-5'>
+            <div className='col-span-2 overflow-auto rounded-sm border-2 border-gray-100 bg-white p-5 @5xl/route:col-start-3 @5xl/route:col-end-5'>
                 <h2 className='font-semibold'>Stay duration summary</h2>
-                <ResponsiveContainer height={240} width='100%'>
+                <ResponsiveContainer height={240} minWidth={500} width='100%'>
                     <PieChart>
                         <Pie
                             cx='40%'

@@ -20,10 +20,8 @@ const Settings = () => {
     return (
         <div>
             <PageHeader title='Settings' />
-            <div className='rounded-sm bg-white p-5'>
-                <div className='max-w-[30%]'>
-                    <SettingsForm settings={settings} />
-                </div>
+            <div className='flex flex-wrap gap-x-3 gap-y-3 rounded-sm bg-white p-5'>
+                <SettingsForm settings={settings} />
             </div>
         </div>
     );

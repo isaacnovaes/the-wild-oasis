@@ -23,7 +23,7 @@ const Stat = (props: {
     readonly value: string;
 }) => {
     return (
-        <div className='grid grid-cols-[4rem_1fr] grid-rows-[auto_auto] gap-x-7 rounded-md border-2 border-gray-100 bg-white p-6'>
+        <div className='col-span-full grid grid-cols-[4rem_1fr] grid-rows-[auto_auto] gap-x-7 rounded-md border-2 border-gray-100 bg-white p-6 @lg/route:@max-5xl/route:odd:col-start-1 @lg/route:@max-5xl/route:odd:col-end-2 @lg/route:@max-5xl/route:even:col-start-2 @lg/route:@max-5xl/route:even:col-end-3 @5xl/route:col-span-1 @5xl/route:col-end-auto'>
             <div
                 className={cn(
                     'row-start-1 row-end-3 flex aspect-square items-center justify-center rounded-[50%]',

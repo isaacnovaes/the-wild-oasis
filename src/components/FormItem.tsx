@@ -25,7 +25,7 @@ const FormItem = <T extends FieldValues>(props: InputProps<T>) => {
     const isDirty = inputType === 'registered' ? isFormDirty : false;
 
     return (
-        <div className={`flex flex-col not-first:my-4`}>
+        <div className={`flex flex-col`}>
             <Label className='flex items-center py-1' htmlFor={id}>
                 {label}
             </Label>

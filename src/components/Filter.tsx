@@ -33,7 +33,7 @@ function Filter({
                 return (
                     <Button
                         key={`${option.value}${option.method}`}
-                        className={`rounded-sm border-2 border-transparent px-2 text-sm font-normal ${isActive ? 'border-indigo-500 bg-indigo-500 text-white hover:cursor-not-allowed' : 'text-slate-700 hover:cursor-pointer hover:bg-indigo-100'}`}
+                        className={`rounded-sm border-2 border-transparent px-2 text-xs font-normal md:text-sm ${isActive ? 'border-indigo-500 bg-indigo-500 text-white hover:cursor-not-allowed' : 'text-slate-700 hover:cursor-pointer hover:bg-indigo-100'}`}
                         size='sm'
                         type='button'
                         variant='ghost'

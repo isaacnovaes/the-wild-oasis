@@ -9,6 +9,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { ErrorComponent, getRouteApi } from '@tanstack/react-router';
+import { EllipsisVertical } from 'lucide-react';
 import { useState } from 'react';
 import Loading from '../../components/Loading';
 import Pagination from '../../components/Pagination';
@@ -61,22 +62,24 @@ const Cabins = () => {
             >
                 <CabinTableOperations />
             </PageHeader>
-            <Table columns='grid-cols-[0.6fr_1fr_2fr_1.5fr_1fr_1fr_3.2rem]'>
-                <Table.Header>
-                    <div />
-                    <div>Id</div>
-                    <div>Name</div>
-                    <div>Capacity</div>
-                    <div>Price</div>
-                    <div>Discount</div>
-                    <div />
-                </Table.Header>
+            <Table columns='grid-cols-[6rem_4rem_12rem_11rem_8rem_8rem_3rem] @4xl/route:grid-cols-[6rem_0.5fr_1fr_1fr_8rem_8rem_3rem] pl-2 py-3'>
                 {cabinsQuery.isLoading ? (
                     <Loading />
                 ) : cabinsQuery.data?.cabins ? (
                     <>
                         <Table.Body
                             data={cabinsQuery.data.cabins}
+                            header={
+                                <>
+                                    <div />
+                                    <div>Id</div>
+                                    <div>Name</div>
+                                    <div>Capacity</div>
+                                    <div>Price</div>
+                                    <div>Discount</div>
+                                    <EllipsisVertical className='invisible size-4 stroke-gray-600' />
+                                </>
+                            }
                             render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
                         />
                         <Table.Footer>

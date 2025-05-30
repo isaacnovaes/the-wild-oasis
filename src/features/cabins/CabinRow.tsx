@@ -19,7 +19,7 @@ const CabinRow = ({ cabin }: { readonly cabin: Cabin }) => {
                     {cabin.linkedToBooking ? 'linked to a booking' : ''}
                 </span>
             </div>
-            <span>{cabin.name}</span>
+            <span className='truncate'>{cabin.name}</span>
             <span>Fits up to {cabin.maxCapacity} guests</span>
             <Currency amount={cabin.regularPrice} />
             {cabin.discount > 0 ? (

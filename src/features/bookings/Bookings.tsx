@@ -9,6 +9,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { ErrorComponent, getRouteApi } from '@tanstack/react-router';
+import { EllipsisVertical } from 'lucide-react';
 import { useState } from 'react';
 import Loading from '../../components/Loading';
 import Pagination from '../../components/Pagination';
@@ -62,22 +63,24 @@ const Bookings = () => {
             >
                 <BookingTableOperations />
             </PageHeader>
-            <Table columns='grid-cols-[0.6fr_0.6fr_2fr_2.4fr_1.4fr_1fr_3.2rem]'>
-                <Table.Header>
-                    <div>Id</div>
-                    <div>Cabin id</div>
-                    <div>Guest</div>
-                    <div>Dates</div>
-                    <div>Status</div>
-                    <div>Amount</div>
-                    <div />
-                </Table.Header>
+            <Table columns='grid-cols-[2rem_3.9rem_8rem_11rem_10rem_7rem_3rem] @4xl/table:grid-cols-[3rem_6rem_1fr_1fr_10rem_10rem_3rem] gap-x-5 pl-2 py-3 items-center'>
                 {isPending ? (
                     <Loading />
                 ) : (
                     <>
                         <Table.Body
                             data={data.bookings}
+                            header={
+                                <>
+                                    <div>Id</div>
+                                    <div>Cabin id</div>
+                                    <div>Guest</div>
+                                    <div>Dates</div>
+                                    <div>Status</div>
+                                    <div>Amount</div>
+                                    <EllipsisVertical className='invisible size-4 stroke-gray-600' />
+                                </>
+                            }
                             render={(booking) => (
                                 <BookingRow key={booking.id} bookingRow={booking} />
                             )}

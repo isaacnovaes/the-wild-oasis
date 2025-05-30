@@ -30,7 +30,7 @@ function RouteComponent() {
 
     if (isAuthenticated) {
         return (
-            <div className='grid size-full grid-cols-1 grid-rows-[5rem_auto] md:grid-cols-[10rem_auto] md:grid-rows-[5rem_auto] lg:grid-cols-[20rem_auto]'>
+            <div className='grid size-full grid-cols-1 grid-rows-[5rem_auto] md:grid-cols-[10rem_auto] md:grid-rows-[5rem_auto] xl:grid-cols-[20rem_auto]'>
                 <div className='p-4 md:border-b-1 md:border-zinc-200'>
                     <div className='mx-auto flex max-w-[80rem] items-center justify-between'>
                         <div className='flex flex-col items-center justify-between md:flex-row md:gap-4'>
@@ -48,7 +48,7 @@ function RouteComponent() {
                 </div>
                 <Navigation />
                 <div className='overflow-y-auto bg-zinc-50 p-4'>
-                    <div className='mx-auto h-full max-w-[80rem]'>
+                    <div className='@container/route mx-auto h-full max-w-[80rem]'>
                         <Outlet />
                     </div>
                 </div>

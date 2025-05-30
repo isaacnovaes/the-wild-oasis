@@ -24,7 +24,7 @@ const Pagination = ({
     const toItem = fromItem + PAGE_SIZE - 1;
 
     return (
-        <div className='flex items-center justify-between bg-zinc-100 px-2 py-4 text-sm'>
+        <div className='flex flex-col items-center justify-between gap-y-2 bg-zinc-100 px-2 py-4 text-sm @lg/table-footer:flex-row'>
             <div>
                 Showing <span className='font-semibold'>{fromItem + 1}</span> to{' '}
                 <span className='font-semibold'>{toItem + 1 > count ? count : toItem + 1}</span> of{' '}

@@ -4,21 +4,21 @@ import type { Guest } from '../types/guests';
 
 export const guests: Omit<Guest, 'created_at' | 'id'>[] = [
     {
-        fullName: 'Jonas Schmedtmann',
+        fullName: 'Jonas Miller',
         email: 'hello@jonas.io',
         nationality: 'Portugal',
         nationalId: '3525436345',
         countryFlag: 'https://flagcdn.com/pt.svg',
     },
     {
-        fullName: 'Jonathan Smith',
+        fullName: 'Edgar Smith',
         email: 'johnsmith@test.eu',
         nationality: 'Great Britain',
         nationalId: '4534593454',
         countryFlag: 'https://flagcdn.com/gb.svg',
     },
     {
-        fullName: 'Jonatan Johansson',
+        fullName: 'Jonatan Fin',
         email: 'jonatan@example.com',
         nationality: 'Finland',
         nationalId: '9374074454',

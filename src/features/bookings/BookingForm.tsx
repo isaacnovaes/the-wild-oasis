@@ -384,7 +384,7 @@ const BookingForm = (props: Props) => {
                         <FormItem>
                             <FormLabel>Observations</FormLabel>
                             <FormControl>
-                                <Input placeholder='Gluten free breakfast...' {...field} />
+                                <Input placeholder='Gluten-free breakfast...' {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

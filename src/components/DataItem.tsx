@@ -17,7 +17,7 @@ const DataItem = ({
 }) => {
     const Comp = icon;
     return (
-        <div className='flex items-center gap-5 py-2'>
+        <div className='flex flex-wrap items-center gap-x-5 gap-y-2 py-2'>
             <div className='flex items-center gap-x-5 gap-y-2 font-medium'>
                 <Comp className={`size-5 ${iconColor ?? 'stroke-indigo-500'}`} />
                 <span>{label}</span>

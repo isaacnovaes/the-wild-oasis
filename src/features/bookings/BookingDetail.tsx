@@ -24,10 +24,10 @@ const BookingDetail = (props: { readonly booking: FullBooking }) => {
     } = props.booking;
 
     return (
-        <section className='overflow-hidden rounded-sm'>
-            <header className='flex items-center justify-between bg-indigo-500 p-5 text-2xl font-medium text-gray-50'>
+        <section className='@container/booking-detail overflow-hidden rounded-sm'>
+            <header className='flex flex-wrap items-center justify-between gap-x-12 gap-y-3 bg-indigo-500 p-5 text-2xl font-medium text-gray-50'>
                 <div className='flex items-center gap-6 text-xl font-semibold'>
-                    <Warehouse className='size-4 stroke-gray-50 md:size-5' />
+                    <Warehouse className='aspect-square w-4 min-w-4 stroke-gray-50' />
                     <p>
                         {numNights} nights in Cabin <span>{cabins.name}</span>
                     </p>
@@ -39,7 +39,7 @@ const BookingDetail = (props: { readonly booking: FullBooking }) => {
                 </p>
             </header>
             <section className='bg-white p-5'>
-                <div className='mb-2 flex items-center gap-4 text-gray-500'>
+                <div className='mb-2 flex flex-wrap items-center gap-x-5 gap-y-2 text-gray-500'>
                     {guests.countryFlag ? (
                         <img
                             alt={`Flag of ${guests.nationality}`}
@@ -51,10 +51,14 @@ const BookingDetail = (props: { readonly booking: FullBooking }) => {
                         {guests.fullName}{' '}
                         {numGuests > 1 ? `+ ${(numGuests - 1).toString()} guests` : ''}
                     </p>
-                    <span>&bull;</span>
-                    <p>{guests.email}</p>
-                    <span>&bull;</span>
-                    <p>National ID {guests.nationalId}</p>
+                    <div className='flex gap-x-2'>
+                        <span>&bull;</span>
+                        <p>{guests.email}</p>
+                    </div>
+                    <div className='flex gap-x-2'>
+                        <span>&bull;</span>
+                        <p>National ID {guests.nationalId}</p>
+                    </div>
                 </div>
 
                 {observations ? (
@@ -69,7 +73,7 @@ const BookingDetail = (props: { readonly booking: FullBooking }) => {
 
                 <div
                     className={cn(
-                        'mt-2 flex items-center justify-between rounded-sm p-5',
+                        'mt-2 flex flex-wrap items-center justify-between gap-x-5 rounded-sm p-5',
                         isPaid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
                     )}
                 >

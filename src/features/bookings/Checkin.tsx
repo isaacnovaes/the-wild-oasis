@@ -98,9 +98,9 @@ const Checkin = () => {
                                 setConfirmPaid(false);
                             }}
                         />
-                        <div className='grid gap-1.5 leading-none'>
+                        <div className='grid gap-1.5'>
                             <label
-                                className='text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+                                className='text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
                                 htmlFor='terms1'
                             >
                                 Want to add breakfast for {formatCurrency(optionalBreakfastPrice)}
@@ -117,9 +117,9 @@ const Checkin = () => {
                             setConfirmPaid((cur) => !cur);
                         }}
                     />
-                    <div className='grid gap-1.5 leading-none'>
+                    <div className='grid gap-1.5'>
                         <label
-                            className='text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+                            className='text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
                             htmlFor='terms1'
                         >
                             I confirm that {fullName} has paid the total amount of{' '}

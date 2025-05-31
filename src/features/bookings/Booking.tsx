@@ -64,7 +64,7 @@ const Booking = () => {
                 <Back isDisabled={disabled} />
             </PageHeader>
             <BookingDetail booking={bookingQuery.data} />
-            <div className='mt-4 flex items-center justify-end space-x-3'>
+            <div className='mt-4 flex flex-wrap items-center justify-end gap-3'>
                 {status === 'unconfirmed' && (
                     <>
                         <Button disabled={disabled}>

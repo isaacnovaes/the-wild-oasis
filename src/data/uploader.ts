@@ -80,7 +80,6 @@ async function createBookings() {
     const settings = await getSettings();
 
     const finalBookings = bookings.map((booking): Omit<Booking, 'id'> => {
-        // Here relying on the order of cabins, as they don't have an ID yet
         const cabin = cabins.at(booking.cabinId - 1);
         const guestId = allGuestIds.at(booking.guestId - 1);
         const cabinId = allCabinIds.at(booking.cabinId - 1);
@@ -122,12 +121,10 @@ async function createBookings() {
 }
 
 export const seedDb = async () => {
-    // Bookings need to be deleted FIRST
     await deleteBookings();
     await deleteGuests();
     await deleteCabins();
 
-    // Bookings need to be created LAST
     await createGuests();
     await createCabins();
     await createBookings();

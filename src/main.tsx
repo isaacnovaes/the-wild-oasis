@@ -15,7 +15,7 @@ if (!root) {
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            staleTime: 1000 * 60 * 20, // 5 minutes
+            staleTime: 1000 * 60 * 20,
             gcTime: Infinity,
             retry: false,
         },

@@ -19,12 +19,10 @@ export async function getCabins({ page, filter, sortBy }: SearchParams) {
     const to = from + PAGE_SIZE - 1;
     query = query.range(from, to);
 
-    // FILTER
     if (filter && filter.value !== 'all') {
         query = query[filter.method || 'eq'](filter.field, filter.value);
     }
 
-    // SORT
     if (sortBy)
         query = query.order(sortBy.field, {
             ascending: sortBy.direction === 'asc',
@@ -124,13 +122,10 @@ export async function createEditCabin({
         ? newCabin.image
         : `${SUPABASE_URL}/storage/v1/object/public/cabin-images/${imageName}`;
 
-    // 1. Create/edit cabin
     let query = supabase.from('cabins');
 
-    // A) CREATE
     if (!id) query = query.insert([{ ...newCabin, image: imagePath }]);
 
-    // B) EDIT
     if (id) query = query.update({ ...newCabin, image: imagePath }).eq('id', id);
 
     const response = await query.select().single();
@@ -146,7 +141,6 @@ export async function createEditCabin({
         throw new Error(cabinValidation.error.message);
     }
 
-    // 2. Upload image
     if (hasImagePath) return cabinValidation.data;
 
     const imageFileList = CabinImageFileListSchema.parse(newCabin.image);
@@ -156,7 +150,6 @@ export async function createEditCabin({
         .from('cabin-images')
         .upload(imageName, imageFileValidation);
 
-    // 3. Delete the cabin IF there was an error uplaoding image
     if (storageError) {
         await supabase.from('cabins').delete().eq('id', cabinValidation.data.id);
         console.error(storageError);

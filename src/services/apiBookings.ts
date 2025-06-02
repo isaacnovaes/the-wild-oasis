@@ -19,13 +19,11 @@ export async function getBookings({ filter, sortBy, page }: SearchParams) {
             'id, startDate, endDate, numNights, numGuests, status, totalPrice,hasBreakfast, isPaid, observations,cabinId, guestId, cabins(id), guests(fullName, email)',
             { count: 'exact' }
         );
-    // FILTER
 
     if (filter && filter.value !== 'all') {
         query = query[filter.method || 'eq'](filter.field, filter.value);
     }
 
-    // SORT
     if (sortBy)
         query = query.order(sortBy.field, {
             ascending: sortBy.direction === 'asc',
@@ -116,7 +114,6 @@ export async function updateBooking(id: string, obj: Partial<Booking>) {
     return validation.data;
 }
 
-// date: ISOString
 export async function getBookingsAfterDate(date: string) {
     const { data, error } = await supabase
         .from('bookings')
@@ -157,7 +154,6 @@ export async function getBookingsAfterDate(date: string) {
     return validation.data.bookings;
 }
 
-// Activity means that there is a check in or a check out today
 export async function getStaysTodayActivity() {
     const startOfDayDate = startOfDay(new Date());
     const startOfDayString = formatISO(startOfDayDate);

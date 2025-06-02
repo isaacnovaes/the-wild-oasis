@@ -1,5 +1,3 @@
-// Search for: 'jo', 'fa', 'mar', 'emm', 'ah'
-
 import type { Guest } from '../types/guests';
 
 export const guests: Omit<Guest, 'created_at' | 'id'>[] = [

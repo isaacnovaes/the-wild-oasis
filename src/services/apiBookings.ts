@@ -16,7 +16,7 @@ export async function getBookings({ filter, sortBy, page }: SearchParams) {
     let query = supabase
         .from('bookings')
         .select(
-            'id, startDate, endDate, numNights, numGuests, status, totalPrice,hasBreakfast, isPaid, observations,cabinId, guestId, cabins(id), guests(fullName, email)',
+            'id, startDate, endDate, numNights, numGuests, status, totalPrice,hasBreakfast, isPaid, observations,cabinId, guestId, guests(fullName, email)',
             { count: 'exact' }
         );
 

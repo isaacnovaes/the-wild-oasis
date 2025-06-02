@@ -21,8 +21,8 @@ interface ControlledProps extends BasicProps {
 type InputProps<T extends FieldValues> = RegisteredProps<T> | ControlledProps;
 
 const FormItem = <T extends FieldValues>(props: InputProps<T>) => {
-    const { label, id, error, inputType, isFormDirty, ...rest } = props;
-    const isDirty = inputType === 'registered' ? isFormDirty : false;
+    const { label, id, error, inputType, ...rest } = props;
+    const isDirty = inputType === 'registered' ? props.isFormDirty : false;
 
     return (
         <div className={`flex flex-col`}>

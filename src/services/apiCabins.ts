@@ -3,6 +3,7 @@ import { BookingSchema } from '@/types/bookings';
 import type { SearchParams } from '@/types/global';
 import { z } from 'zod';
 import supabase, { SUPABASE_URL } from '../supabase';
+
 import {
     CabinImageFileListSchema,
     CabinImageFileSchema,
@@ -20,7 +21,37 @@ export async function getCabins({ page, filter, sortBy }: SearchParams) {
     query = query.range(from, to);
 
     if (filter && filter.value !== 'all') {
-        query = query[filter.method || 'eq'](filter.field, filter.value);
+        switch (filter.method) {
+            case 'eq':
+                query = query.eq(filter.field, filter.value);
+                break;
+            case 'neq':
+                query = query.neq(filter.field, filter.value);
+                break;
+            case 'gt':
+                query = query.gt(filter.field, filter.value);
+                break;
+            case 'lt':
+                query = query.lt(filter.field, filter.value);
+                break;
+            case 'gte':
+                query = query.gte(filter.field, filter.value);
+                break;
+            case 'lte':
+                query = query.lte(filter.field, filter.value);
+                break;
+            case 'like':
+                query = query.like(filter.field, filter.value);
+                break;
+            case 'ilike':
+                query = query.ilike(filter.field, filter.value);
+                break;
+            case 'is':
+                query = query.is(filter.field, filter.value);
+                break;
+            default:
+                query = query.eq(filter.field, filter.value);
+        }
     }
 
     if (sortBy)
@@ -122,11 +153,12 @@ export async function createEditCabin({
         ? newCabin.image
         : `${SUPABASE_URL}/storage/v1/object/public/cabin-images/${imageName}`;
 
-    let query = supabase.from('cabins');
-
-    if (!id) query = query.insert([{ ...newCabin, image: imagePath }]);
-
-    if (id) query = query.update({ ...newCabin, image: imagePath }).eq('id', id);
+    const query = id
+        ? supabase
+              .from('cabins')
+              .update({ ...newCabin, image: imagePath })
+              .eq('id', id)
+        : supabase.from('cabins').insert([{ ...newCabin, image: imagePath }]);
 
     const response = await query.select().single();
 

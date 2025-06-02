@@ -21,7 +21,37 @@ export async function getBookings({ filter, sortBy, page }: SearchParams) {
         );
 
     if (filter && filter.value !== 'all') {
-        query = query[filter.method || 'eq'](filter.field, filter.value);
+        switch (filter.method) {
+            case 'eq':
+                query = query.eq(filter.field, filter.value);
+                break;
+            case 'neq':
+                query = query.neq(filter.field, filter.value);
+                break;
+            case 'gt':
+                query = query.gt(filter.field, filter.value);
+                break;
+            case 'lt':
+                query = query.lt(filter.field, filter.value);
+                break;
+            case 'gte':
+                query = query.gte(filter.field, filter.value);
+                break;
+            case 'lte':
+                query = query.lte(filter.field, filter.value);
+                break;
+            case 'like':
+                query = query.like(filter.field, filter.value);
+                break;
+            case 'ilike':
+                query = query.ilike(filter.field, filter.value);
+                break;
+            case 'is':
+                query = query.is(filter.field, filter.value);
+                break;
+            default:
+                query = query.eq(filter.field, filter.value);
+        }
     }
 
     if (sortBy)

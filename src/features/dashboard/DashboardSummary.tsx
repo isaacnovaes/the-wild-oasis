@@ -151,7 +151,7 @@ const DashboardSummary = (props: {
             </div>
             <div className='col-span-2 overflow-auto rounded-sm border-2 border-gray-100 bg-white p-5 @5xl/route:col-start-3 @5xl/route:col-end-5'>
                 <h2 className='font-semibold'>Stay duration summary</h2>
-                <ResponsiveContainer height={240} minWidth={500} width='100%'>
+                <ResponsiveContainer height={225} minWidth={500} width='100%'>
                     <PieChart>
                         <Pie
                             cx='40%'
@@ -178,7 +178,7 @@ const DashboardSummary = (props: {
                             iconType='circle'
                             layout='vertical'
                             verticalAlign='middle'
-                            width='30%'
+                            width={150}
                         />
                     </PieChart>
                 </ResponsiveContainer>

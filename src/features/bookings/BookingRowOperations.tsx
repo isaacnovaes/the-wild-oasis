@@ -12,6 +12,7 @@ import {
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -24,6 +25,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useCheckOut, useDeleteBookingMutation } from '@/utils/hooks';
 import { Link } from '@tanstack/react-router';
 import { ArrowDown, ArrowUp, EllipsisVertical, Eye, Loader, Pencil, Trash2 } from 'lucide-react';
@@ -135,17 +137,25 @@ const BookingRowOperations = ({ bookingRow }: { readonly bookingRow: BookingRowT
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <DialogContent aria-describedby={undefined}>
-                <DialogHeader>
-                    <DialogTitle>Edit booking #{bookingRow.id}</DialogTitle>
-                </DialogHeader>
-                <BookingForm
-                    booking={bookingRow}
-                    mode='edit'
-                    onSuccess={() => {
-                        setOpenEditBooking(false);
-                    }}
-                />
+            <DialogContent>
+                <ScrollArea
+                    className='h-[calc(100dvh-10rem)] max-h-[655px] overflow-hidden'
+                    type='auto'
+                >
+                    <DialogHeader className='mb-3'>
+                        <DialogTitle>Edit booking #{bookingRow.id}</DialogTitle>
+                        <DialogDescription>
+                            Edit booking. Click save when you&apos;re done.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <BookingForm
+                        booking={bookingRow}
+                        mode='edit'
+                        onSuccess={() => {
+                            setOpenEditBooking(false);
+                        }}
+                    />
+                </ScrollArea>
             </DialogContent>
         </Dialog>
     );

@@ -8,6 +8,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { ErrorComponent, getRouteApi } from '@tanstack/react-router';
 import { EllipsisVertical } from 'lucide-react';
 import { useState } from 'react';
@@ -43,19 +44,24 @@ const Bookings = () => {
                             <Button variant={'outline'}>Create booking</Button>
                         </DialogTrigger>
                         <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Create booking</DialogTitle>
-                                <DialogDescription>
-                                    Create booking. Click save when you&apos;re done.
-                                </DialogDescription>
-                            </DialogHeader>
+                            <ScrollArea
+                                className='h-[calc(100dvh-10rem)] max-h-[655px] overflow-hidden'
+                                type='auto'
+                            >
+                                <DialogHeader className='mb-3'>
+                                    <DialogTitle>Create booking</DialogTitle>
+                                    <DialogDescription>
+                                        Create booking. Click save when you&apos;re done.
+                                    </DialogDescription>
+                                </DialogHeader>
 
-                            <BookingForm
-                                mode='create'
-                                onSuccess={() => {
-                                    setOpenCreateCabin(false);
-                                }}
-                            />
+                                <BookingForm
+                                    mode='create'
+                                    onSuccess={() => {
+                                        setOpenCreateCabin(false);
+                                    }}
+                                />
+                            </ScrollArea>
                         </DialogContent>
                     </Dialog>
                 }

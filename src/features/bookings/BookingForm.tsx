@@ -266,7 +266,7 @@ const BookingForm = (props: Props) => {
 
     return (
         <Form {...form}>
-            <form className='space-y-3' onSubmit={form.handleSubmit(onSubmit)}>
+            <form className='space-y-3 px-1' onSubmit={form.handleSubmit(onSubmit)}>
                 <GuestCombo
                     error={form.formState.errors.guestId?.message}
                     guestId={guestId}

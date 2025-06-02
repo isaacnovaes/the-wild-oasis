@@ -25,6 +25,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Copy, EllipsisVertical, Loader, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
@@ -142,19 +143,24 @@ const CabinRowOperations = ({ cabin }: { readonly cabin: Cabin }) => {
             </DropdownMenu>
 
             <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Edit cabin #{cabin.id}</DialogTitle>
-                    <DialogDescription>
-                        Edit cabin form. Click save when you&apos;re done.
-                    </DialogDescription>
-                </DialogHeader>
-                <CabinForm
-                    cabin={cabin}
-                    mode='edit'
-                    onSuccess={() => {
-                        setOpenCreateCabin(false);
-                    }}
-                />
+                <ScrollArea
+                    className='h-[calc(100dvh-10rem)] max-h-[515px] overflow-hidden'
+                    type='auto'
+                >
+                    <DialogHeader className='mb-3'>
+                        <DialogTitle>Edit cabin #{cabin.id}</DialogTitle>
+                        <DialogDescription>
+                            Edit cabin form. Click save when you&apos;re done.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <CabinForm
+                        cabin={cabin}
+                        mode='edit'
+                        onSuccess={() => {
+                            setOpenCreateCabin(false);
+                        }}
+                    />
+                </ScrollArea>
             </DialogContent>
         </Dialog>
     );

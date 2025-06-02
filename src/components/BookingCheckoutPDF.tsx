@@ -61,17 +61,18 @@ const BookingCheckoutPDF = ({ booking }: { readonly booking: FullBooking }) => {
 
                 <Text style={styles.sectionTitle}>Cabin Information</Text>
                 <Field label='Cabin Name' value={cabin.name} />
+                <Field label='Regular Price' value={formatCurrency(cabin.regularPrice)} />
+                <Field label='Discount' value={formatCurrency(cabin.discount)} />
+                <Field label='Max Capacity' value={cabin.maxCapacity} />
                 <View style={styles.row}>
                     <Text style={styles.label}>Cabin Image</Text>
                     <Image src={cabin.image} style={styles.image} />
                 </View>
-                <Field label='Max Capacity' value={cabin.maxCapacity} />
-                <Field label='Regular Price' value={formatCurrency(cabin.regularPrice)} />
-                <Field label='Discount' value={formatCurrency(cabin.discount)} />
 
                 <Text style={styles.sectionTitle}>Booking Details</Text>
                 <Field label='Booking ID' value={booking.id} />
                 <Field label='Status' value={booking.status} />
+                <Field label='Cabin Price At Booking' value={formatCurrency(booking.cabinPrice)} />
                 <Field label='Is Paid' value={booking.isPaid ? 'Yes' : 'No'} />
                 <Field
                     label='Start Date'
@@ -86,7 +87,10 @@ const BookingCheckoutPDF = ({ booking }: { readonly booking: FullBooking }) => {
                 <Field label='Breakfast' value={booking.hasBreakfast ? 'Yes' : 'No'} />
 
                 <Text style={styles.sectionTitle}>Pricing</Text>
-                <Field label='Cabin Price' value={formatCurrency(booking.cabinPrice)} />
+                <Field
+                    label='Cabin Price'
+                    value={`${formatCurrency(booking.cabinPrice * booking.numNights)} (${formatCurrency(booking.cabinPrice)} * ${booking.numNights.toString()} nights)`}
+                />
                 <Field label='Breakfast Price' value={formatCurrency(booking.extrasPrice)} />
                 <Field label='Total Price' value={formatCurrency(booking.totalPrice)} />
             </Page>

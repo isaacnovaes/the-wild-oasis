@@ -1,4 +1,5 @@
 import Back from '@/components/Back';
+import BookingCheckoutPDF from '@/components/BookingCheckoutPDF';
 import BookingStatus from '@/components/BookingStatus';
 import Loading from '@/components/Loading';
 import PageHeader from '@/components/PageHeader';
@@ -22,6 +23,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { useCheckOut, useDeleteBookingMutation, useFullBooking } from '@/utils/hooks';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import { ErrorComponent, getRouteApi, Link, useRouter } from '@tanstack/react-router';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { useState } from 'react';
@@ -47,7 +49,7 @@ const Booking = () => {
         return <ErrorComponent error={bookingQuery.error} />;
     }
 
-    const { status, cabinId, isPaid } = bookingQuery.data;
+    const { status, cabinId, isPaid, id } = bookingQuery.data;
 
     const disabled = checkoutMutation.isPending || deleteBookingMutation.isPending;
 
@@ -86,6 +88,7 @@ const Booking = () => {
                         )}
                     </>
                 )}
+
                 {status === 'checked-in' && (
                     <Button
                         disabled={disabled}
@@ -97,6 +100,21 @@ const Booking = () => {
                         <ArrowUp /> Check out
                     </Button>
                 )}
+
+                {status === 'checked-out' ? (
+                    <Button asChild>
+                        <PDFDownloadLink
+                            document={<BookingCheckoutPDF booking={bookingQuery.data} />}
+                            fileName={`booking-${id.toString()}-checkout-information.pdf`}
+                        >
+                            {({ loading }) =>
+                                loading
+                                    ? 'Loading document checkout information...'
+                                    : 'Download checkout information'
+                            }
+                        </PDFDownloadLink>
+                    </Button>
+                ) : null}
 
                 <AlertDialog>
                     <AlertDialogTrigger

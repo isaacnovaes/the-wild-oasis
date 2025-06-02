@@ -104,7 +104,7 @@ const DashboardSummary = (props: {
                         todayBookingsQuery.data.map((b) => (
                             <div
                                 key={b.id}
-                                className='gray-100 grid grid-cols-[6rem_2rem_1fr_5rem_5rem] items-center gap-x-8 border-b-2 border-b-gray-100 px-3 py-1 text-xl'
+                                className='gray-100 grid grid-cols-[6rem_2rem_9rem_5rem_5rem] items-center gap-x-8 border-b-2 border-b-gray-100 px-3 py-1 text-xl'
                             >
                                 {b.status === 'unconfirmed' && (
                                     <BookingStatus className='p-2' status={b.status} />

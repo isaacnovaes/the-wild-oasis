@@ -76,7 +76,7 @@ const Booking = () => {
                             </Link>
                         </Button>
                         {!isPaid && (
-                            <Button asChild variant='secondary'>
+                            <Button asChild variant='outline'>
                                 <DialogTrigger
                                     onClick={(e) => {
                                         e.stopPropagation();
@@ -101,20 +101,16 @@ const Booking = () => {
                     </Button>
                 )}
 
-                {status === 'checked-out' ? (
-                    <Button asChild>
-                        <PDFDownloadLink
-                            document={<BookingCheckoutPDF booking={bookingQuery.data} />}
-                            fileName={`booking-${id.toString()}-checkout-information.pdf`}
-                        >
-                            {({ loading }) =>
-                                loading
-                                    ? 'Loading document checkout information...'
-                                    : 'Download checkout information'
-                            }
-                        </PDFDownloadLink>
-                    </Button>
-                ) : null}
+                <Button asChild variant='secondary'>
+                    <PDFDownloadLink
+                        document={<BookingCheckoutPDF booking={bookingQuery.data} />}
+                        fileName={`booking-${id.toString()}-summary.pdf`}
+                    >
+                        {({ loading }) =>
+                            loading ? 'Loading booking information' : 'Download booking summary'
+                        }
+                    </PDFDownloadLink>
+                </Button>
 
                 <AlertDialog>
                     <AlertDialogTrigger

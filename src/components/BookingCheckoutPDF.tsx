@@ -51,7 +51,7 @@ const BookingCheckoutPDF = ({ booking }: { readonly booking: FullBooking }) => {
     return (
         <Document>
             <Page size='A4' style={styles.page}>
-                <Text style={styles.header}>Cabin Booking Checkout</Text>
+                <Text style={styles.header}>Booking Summary</Text>
 
                 <Text style={styles.sectionTitle}>Guest Information</Text>
                 <Field label='Full Name' value={guest.fullName} />

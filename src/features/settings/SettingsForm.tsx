@@ -27,7 +27,7 @@ const SettingsForm = ({ settings }: { readonly settings: Settings }) => {
 
     const updateSettingItem = (item: keyof Settings, value: number) => {
         if (settings[item] !== value) {
-            mutate({ [item]: value });
+            mutate({ [item]: value, editedAt: new Date().toISOString() });
         }
     };
 

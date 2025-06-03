@@ -71,7 +71,7 @@ const CabinForm = (props: Props) => {
 
     return (
         <Form {...form}>
-            <form className='space-y-3 px-1' onSubmit={form.handleSubmit(onSubmit)}>
+            <form className='mt-3 space-y-3 px-1' onSubmit={form.handleSubmit(onSubmit)}>
                 <FormField
                     control={form.control}
                     name='name'

@@ -45,7 +45,7 @@ const Cabins = () => {
                         </DialogTrigger>
                         <DialogContent>
                             <ScrollArea
-                                className='h-[calc(100dvh-10rem)] max-h-[502px] overflow-hidden'
+                                className='h-[calc(100dvh-10rem)] max-h-[515px] overflow-hidden'
                                 type='auto'
                             >
                                 <DialogHeader>

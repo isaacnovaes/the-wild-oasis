@@ -1,4 +1,4 @@
-# The wild oasis - an internal cabin booking system for small business
+# The Wild Oasis – Internal Cabin Booking System
 
 [Link to live project](https://the-wild-oasis-isaac.netlify.app)
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-An internal tool designed for small businesses to manage cabin bookings efficiently. Built with modern technologies like React, TanStack Router, TanStack Query, React hook form, Tailwind CSS, CSS container queries, and Supabase.
+A full-stack web application for managing cabin bookings in a small business environment. Built with React, TanStack Router, TanStack Query, Tailwind CSS, CSS container queries, and Supabase, the system supports full CRUD operations for cabins, users, and bookings. Key features include dynamic pricing configuration, check-in/check-out flows, responsive UI with container queries, type-safe routing, URL-based filtering/sorting, and PDF booking exports. Designed as an internal tool, it emphasizes usability, data integrity, and modern frontend/backend integration.
 
 ## How to run this project
 

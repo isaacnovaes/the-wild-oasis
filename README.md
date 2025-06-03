@@ -1,50 +1,139 @@
-# React + TypeScript + Vite
+# The wild oasis - an internal cabin booking system for small business
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[Link to live project](https://the-wild-oasis-isaac.netlify.app)
 
-Currently, two official plugins are available:
+![Dashboard](./readme-images/dashboard.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Overview
 
-## Expanding the ESLint configuration
+An internal tool designed for small businesses to manage cabin bookings efficiently. Built with modern technologies like React, TanStack Router, TanStack Query, React hook form, Tailwind CSS, CSS container queries, and Supabase.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## How to run this project
 
-- Configure the top-level `parserOptions` property like this:
+- clone project from github
+- on terminal at project root, run `npm install`
+- on terminal at project root, run `npm run dev`
 
-```js
-export default tseslint.config({
-    languageOptions: {
-        // other options...
-        parserOptions: {
-            project: ['./tsconfig.node.json', './tsconfig.app.json'],
-            tsconfigRootDir: import.meta.dirname,
-        },
-    },
-});
-```
+## Features
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Settings
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react';
+[Settings page](./readme-images/settings.png)
 
-export default tseslint.config({
-    // Set the react version
-    settings: { react: { version: '18.3' } },
-    plugins: {
-        // Add the react plugin
-        react,
-    },
-    rules: {
-        // other rules...
-        // Enable its recommended rules
-        ...react.configs.recommended.rules,
-        ...react.configs['jsx-runtime'].rules,
-    },
-});
-```
+[Settings table on supabase](./readme-images/settings-supabase.png)
+
+- id
+- created_at
+- minBookingLength
+- maxBookingLength
+- maxGuestsPerBooking
+- editedAt
+- breakfastPrice
+
+On settings page, it's possible to define application global config that validates and defines booking prices when creating or editing a booking
+
+### Users
+
+[Users](./readme-images/users.png)
+
+Since the wild oasis application is built for internal usage, only employees can create a new user. Each user is an employee.
+
+### Cabins
+
+[Cabins page](./readme-images/cabins.png)
+
+[Create cabin form](./readme-images/create-cabin-form.png)
+
+[Edit cabin form](./readme-images/edit-cabin-form.png)
+
+[Cabins table on supabase](./readme-images/cabins-supabase.png)
+
+- id (primary key)
+- created_at
+- name
+- maxCapacity
+- regularPrice
+- discount
+- description
+- image
+- linkedToBooking
+
+For cabins, it's possible to perform all regular operations (create, edit, and delete). Additionally, cabins can also be duplicated
+
+Cabins linked to a booking cannot be deleted. This information is represented by "linkedToBooking"
+
+The cabin image field stores the image public url, stored on supabase bucket "images"
+
+On cabins table, filters and sorts are available
+
+Filters and sorts are stored on url for easy sharing and bookmarking
+
+### Guests
+
+[Guests table on supabase](./readme-images/guests-supabase.png)
+
+- id (primary key)
+- created_at
+- fullName
+- nationality
+- countryFlag
+- email
+- nationalId
+
+Guests can be chosen while creating a booking
+
+### Bookings
+
+[Bookings page](./readme-images/bookings.png)
+
+[Bookings table on supabase](./readme-images/bookings-supabase.png)
+
+- id
+- created_at
+- startDate
+- endDate
+- numNights
+- numGuests
+- cabinPrice
+- totalPrice
+- extrasPrice
+- status enum(unconfirmed, checked-in, checked-out)
+- isPaid
+- observations
+- hasBreakfast
+- cabinId (Foreign key relation: cabinId → cabins.id)
+- guestId (Foreign key relation: guestId → guests.id)
+
+#### Bookings page
+
+On bookings page, the bookings are displayed.
+
+Filters and sorts are available and stored on url for easy sharing and bookmarking
+
+Unconfirmed bookings can be edited and checked in.
+
+#### Booking check in
+
+[Booking check in](./readme-images//booking-check-in.png)
+
+On check in, payment has to be confirmed.
+
+Also, it's possible to add or remove breakfast for the guests
+
+#### Booking detail
+
+[Booking detail](./readme-images/booking-detail.png)
+
+On booking detail page, all booking information is displayed.
+
+A pdf with the booking information can be downloaded.
+
+## What I learned
+
+In this project, I decided to practice different technologies that I've been wanting to investigate.
+
+Since React didn't have a type-safe router and since I very much appreciate such a feature, TanStack Router was the way to go. File base routing is not something new in the React ecosystem, but the type-safe won me. From now on, I will keep using it for my side projects.
+
+It was also the first time I used tailwindcss and tanstack query in a side project. I will also keep using it. Tanstack query makes interacting with server state a breeze (no need to write any useEffect or intermediate useState's for request states). Tailwind css also facilitates working with css, specially because there is no css duplication, no problem with naming classes, no clash with classes that have the same name. Simple syntax, huge advantage.
+
+Apart from that, it was the very first time I worked with container queries in css. It was very important to easily make the table components responsive. Without container queries, this project would not be fully responsive, because from 1215px to 1280px, even though the display port is always growing, every single route component reduces its size at 1280px - the side bar grows at this viewport width. So defining the display of the table components solely on the viewport width here would break the design.

@@ -98,7 +98,7 @@ const DashboardSummary = (props: {
     return (
         <>
             <div className='col-span-2 overflow-auto rounded-sm border-2 border-gray-100 bg-white p-5 @5xl/route:col-start-1 @5xl/route:col-end-3'>
-                <h2 className='font-semibold'>Today</h2>
+                <h2 className='my-3 font-semibold'>Today</h2>
                 <div>
                     {todayBookingsQuery.data.length ? (
                         todayBookingsQuery.data.map((b) => (

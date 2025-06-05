@@ -4,13 +4,13 @@ import LoginForm from './LoginForm';
 
 const Login = () => {
     return (
-        <div className='grid min-h-dvh grid-cols-[30rem] content-center justify-center gap-12 bg-gray-50'>
-            <section>
+        <div className='grid min-h-dvh content-center justify-center gap-12 bg-gray-50'>
+            <section className='max-w-250'>
                 <Popover>
                     <PopoverTrigger asChild>
-                        <Info className='ml-auto size-12 animate-bounce stroke-indigo-500' />
+                        <Info className='ml-auto size-13 animate-bounce stroke-indigo-500 p-2 hover:cursor-pointer' />
                     </PopoverTrigger>
-                    <PopoverContent className='w-80'>
+                    <PopoverContent>
                         <section className='grid gap-4'>
                             <div className='space-y-2'>
                                 <h4 className='leading-none font-medium'>Project login info</h4>
@@ -39,7 +39,7 @@ const Login = () => {
                         </section>
                     </PopoverContent>
                 </Popover>
-                <img alt='logo' className='m-auto h-20 w-auto py-3 lg:h-30' src='logo-light.png' />
+                <img alt='logo' className='m-auto h-20 py-3 lg:h-30' src='logo-light.png' />
                 <h4 className='my-4 text-center text-3xl font-semibold'>Log in to your account</h4>
                 <LoginForm />
             </section>

@@ -1,6 +1,6 @@
 # The Wild Oasis – Internal Cabin Booking System
 
-[Link to live project](https://the-wild-oasis-isaac.netlify.app)
+[Link to live project](https://the-wild-oasis-isaac.netlify.app/login)
 
 ![Dashboard](./readme-images/dashboard.png)
 

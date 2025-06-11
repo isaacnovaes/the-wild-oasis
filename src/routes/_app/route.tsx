@@ -19,7 +19,7 @@ function RouteComponent() {
     useEffect(() => {
         const checkAndRedirect = async () => {
             if (!isAuthenticated && !isLoading) {
-                await queryClient.invalidateQueries({ queryKey: ['user'] });
+                await queryClient.invalidateQueries();
                 void navigate({ to: '/login', replace: true });
             }
         };

@@ -41,7 +41,8 @@ const LoginForm = () => {
     const loginMutation = useMutation({
         mutationFn: login,
         mutationKey: ['login'],
-        onSuccess: (user) => {
+        onSuccess: async (user) => {
+            await queryClient.invalidateQueries();
             queryClient.setQueryData(['user'], user.user);
             void navigate({ to: '/dashboard', search: { last: 7 }, replace: true });
         },

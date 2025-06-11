@@ -18,9 +18,9 @@ A full-stack web application for managing cabin bookings in a small business env
 
 ### Settings
 
-[Settings page](./readme-images/settings.png)
+![Settings page](./readme-images/settings.png)
 
-[Settings table on supabase](./readme-images/settings-supabase.png)
+![Settings table on supabase](./readme-images/settings-supabase.png)
 
 - id
 - created_at
@@ -34,19 +34,19 @@ On settings page, it's possible to define application global config that validat
 
 ### Users
 
-[Users](./readme-images/users.png)
+![Users](./readme-images/users.png)
 
 Since the wild oasis application is built for internal usage, only employees can create a new user. Each user is an employee.
 
 ### Cabins
 
-[Cabins page](./readme-images/cabins.png)
+![Cabins page](./readme-images/cabins.png)
 
-[Create cabin form](./readme-images/create-cabin-form.png)
+![Create cabin form](./readme-images/create-cabin-form.png)
 
-[Edit cabin form](./readme-images/edit-cabin-form.png)
+![Edit cabin form](./readme-images/edit-cabin-form.png)
 
-[Cabins table on supabase](./readme-images/cabins-supabase.png)
+![Cabins table on supabase](./readme-images/cabins-supabase.png)
 
 - id (primary key)
 - created_at
@@ -70,7 +70,7 @@ Filters and sorts are stored on url for easy sharing and bookmarking
 
 ### Guests
 
-[Guests table on supabase](./readme-images/guests-supabase.png)
+![Guests table on supabase](./readme-images/guests-supabase.png)
 
 - id (primary key)
 - created_at
@@ -84,9 +84,9 @@ Guests can be chosen while creating a booking
 
 ### Bookings
 
-[Bookings page](./readme-images/bookings.png)
+![Bookings page](./readme-images/bookings.png)
 
-[Bookings table on supabase](./readme-images/bookings-supabase.png)
+![Bookings table on supabase](./readme-images/bookings-supabase.png)
 
 - id
 - created_at
@@ -114,7 +114,7 @@ Unconfirmed bookings can be edited and checked in.
 
 #### Booking check in
 
-[Booking check in](./readme-images//booking-check-in.png)
+![Booking check in](./readme-images//booking-check-in.png)
 
 On check in, payment has to be confirmed.
 
@@ -122,7 +122,7 @@ Also, it's possible to add or remove breakfast for the guests
 
 #### Booking detail
 
-[Booking detail](./readme-images/booking-detail.png)
+![Booking detail](./readme-images/booking-detail.png)
 
 On booking detail page, all booking information is displayed.
 

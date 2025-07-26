@@ -5,10 +5,12 @@ import LoginForm from './LoginForm';
 const Login = () => {
     return (
         <div className='grid min-h-dvh content-center justify-center gap-12 bg-gray-50'>
-            <section className='max-w-250'>
+            <section className='relative max-w-250'>
                 <Popover>
                     <PopoverTrigger asChild>
-                        <Info className='ml-auto size-13 animate-bounce stroke-indigo-500 p-2 hover:cursor-pointer' />
+                        <button className='absolute -top-10 right-0' type='button'>
+                            <Info className='ml-auto size-13 stroke-indigo-500 p-2 hover:cursor-pointer' />
+                        </button>
                     </PopoverTrigger>
                     <PopoverContent>
                         <section className='grid gap-4'>

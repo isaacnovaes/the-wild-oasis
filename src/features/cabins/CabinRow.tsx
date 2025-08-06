@@ -9,7 +9,7 @@ const CabinRow = ({ cabin }: { readonly cabin: Cabin }) => {
             <img
                 alt={`${cabin.name} cabin`}
                 className='rounded-sm'
-                height={65}
+                height={44}
                 src={cabin.image}
                 width={65}
             />
